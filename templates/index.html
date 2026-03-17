@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Musiket - a Musical Marketplace</title>
+</head>
+
+<body>
+  <h1>Musiket</h1>
+
+  {% if session.username %}
+  <p>
+    Logged in as {{ session.username }}
+  </p>
+  <p>
+    <a href="/logout">Log out</a>
+  </p>
+  {% else %}
+  <p>
+  <a href="/login">Log in</a>
+  <a href="/register">Register</a>
+  </p>
+  {% endif %}
+
+
+</body>
+
+</html>
