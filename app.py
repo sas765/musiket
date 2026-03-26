@@ -4,6 +4,7 @@ from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import sqlite3
 import db
+import entries
 
 
 app = Flask(__name__)
@@ -24,9 +25,7 @@ def create_entry():
     comment = request.form["comment"]
     user_id = session["user_id"]
 
-    sql = """INSERT INTO Entries (title, artist, comment, user_id)
-            VALUES (?, ?, ?, ?)"""
-    db.execute(sql, [title, artist, comment, user_id])
+    entries.new_entry(title, artist, comment, user_id)
 
     return redirect("/")
 
