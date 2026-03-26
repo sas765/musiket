@@ -28,7 +28,16 @@
   </p>
   {% endif %}
 
+  <h2>Recent entries</h2>
 
+  <ul>
+    {% for entry in entries %}
+    <li>{{ entry.username }} added
+      <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
+      by {{ entry.artist }} to their collection.
+    </li>
+    {% endfor %}
+  </ul>
 </body>
 
 </html>

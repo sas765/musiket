@@ -12,7 +12,13 @@ app.secret_key = config.secret_key
 
 @app.route("/")
 def index():
-    return render_template("index.html")
+    all_entries = entries.get_entries()
+    return render_template("index.html", entries=all_entries)
+
+@app.route("/entry/<int:entry_id>")
+def entry(entry_id):
+    entry = entries.get_entry(entry_id)
+    return render_template("show_entry.html", entry=entry)
 
 @app.route("/new_entry")
 def new_entry():
