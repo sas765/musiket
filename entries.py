@@ -29,3 +29,7 @@ def update_entry(title, artist, comment, entry_id):
                                 comment = ?
                             WHERE id = ?"""
     db.execute(sql, [title, artist, comment, entry_id])
+
+def remove_entry(entry_id):
+    sql = "DELETE FROM Entries WHERE id = ?"
+    db.execute(sql, [entry_id])

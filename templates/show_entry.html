@@ -12,6 +12,7 @@
   {% if session.user_id == entry.user_id %}
   <p>
     <a href="/edit_entry/{{ entry.id }}">Edit entry</a>
+    <a href="/remove_entry/{{ entry.id }}">Remove entry</a>
   </p>
   {% endif %}
 

@@ -51,6 +51,20 @@ def update_entry():
 
     return redirect("/entry/" + str(entry_id))
 
+@app.route("/remove_entry/<int:entry_id>", methods=["GET", "POST"])
+def remove_entry(entry_id):
+    if request.method == "GET":
+        entry = entries.get_entry(entry_id)
+        return render_template("remove_entry.html", entry=entry)
+
+    if request.method == "POST":
+        if "remove" in request.form:
+            entries.remove_entry(entry_id)
+            return redirect("/")
+        else:
+            return redirect("/entry/" + str(entry_id))
+
+
 @app.route("/register")
 def register():
     return render_template("register.html")
