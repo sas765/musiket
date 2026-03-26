@@ -9,6 +9,12 @@
   <h1>{{ entry.title }}</h1>
   <h2>by {{ entry.artist }}</h2>
 
+  {% if session.user_id == entry.user_id %}
+  <p>
+    <a href="/edit_entry/{{ entry.id }}">Edit entry</a>
+  </p>
+  {% endif %}
+
   <p>
     {{ entry.comment }}
   </p>

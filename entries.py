@@ -13,7 +13,19 @@ def get_entries():
     return db.query(sql)
 
 def get_entry(entry_id):
-    sql = """SELECT e.title, e.artist, e.comment, u.username
+    sql = """SELECT e.id,
+                    e.title,
+                    e.artist,
+                    e.comment,
+                    u.username,
+                    u.id user_id
                 FROM Entries e, Users u
                 WHERE u.id = e.user_id AND e.id = ?"""
     return db.query(sql, [entry_id])[0]
+
+def update_entry(title, artist, comment, entry_id):
+    sql = """UPDATE Entries SET title = ?,
+                                artist = ?,
+                                comment = ?
+                            WHERE id = ?"""
+    db.execute(sql, [title, artist, comment, entry_id])

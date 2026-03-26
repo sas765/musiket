@@ -35,6 +35,22 @@ def create_entry():
 
     return redirect("/")
 
+@app.route("/edit_entry/<int:entry_id>")
+def edit_entry(entry_id):
+    entry = entries.get_entry(entry_id)
+    return render_template("edit_entry.html", entry=entry)
+
+@app.route("/update_entry", methods=["POST"])
+def update_entry():
+    title = request.form["title"]
+    artist = request.form["artist"]
+    comment = request.form["comment"]
+    entry_id = request.form["entry_id"]
+
+    entries.update_entry(title, artist, comment, entry_id)
+
+    return redirect("/entry/" + str(entry_id))
+
 @app.route("/register")
 def register():
     return render_template("register.html")

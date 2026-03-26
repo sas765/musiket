@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit entry in your collection</title>
+</head>
+
+<body>
+  {% if session.user_id == entry.user_id %}
+  <h1>Edit entry in your collection</h1>
+  <form action="/update_entry" method="post">
+    <p>
+      Title: <br />
+      <input type="text" name="title" size="50" value="{{ entry.title }}" />
+    </p>
+    <p>
+      Artist: <br />
+      <input type="text" name="artist" value="{{ entry.artist }}" />
+    </p>
+    <p>
+      Comment: <br />
+      <textarea name="comment" rows="8" cols="60">{{ entry.comment }}</textarea>
+    </p>
+    <input type="hidden" name="entry_id" value="{{ entry.id }}">
+    <input type="submit" value="Update entry" />
+</form>
+  {% else %}
+  <p>You don't have permission to edit this entry.</p>
+  <a href="/">Back</a>
+  {% endif %}
+</body>
+
+</html>
