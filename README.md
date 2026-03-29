@@ -2,7 +2,7 @@
 
 ## Description
 
-Website for artists and fans alike to share their music collections and/or works.
+Website for music lovers to share their taste and recommend new music to others based on their tastes.
 
 
 ## Features
@@ -23,7 +23,7 @@ Install `flask` library:
 $ pip install flask
 ```
 
-Create database table for login:
+Create database tables:
 
 ```
 $ sqlite3 database.db < schema.sql
