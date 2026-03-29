@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Find entry</title>
+</head>
+
+<body>
+  <h1>Find entry</h1>
+
+  <form action="/find_entry" method="get">
+    <p>
+      Hakusana: <input type="text" name="query">
+    </p>
+    <input type="submit" value="Search">
+</form>
+
+<p>
+  <a href="/">Back</a>
+</p>
+
+{% if query %}
+  <h2>Results</h2>
+
+<ul>
+  {% for entry in results %}
+  <li>
+    <a href="/entry/{{ entry.id }}">
+      {{ entry.title }} by {{ entry.artist }}
+    </a>
+    in {{ entry.username }}'s collection
+  </li>
+  {% endfor %}
+</ul>
+{% endif %}
+</body>
+
+</html>

@@ -64,6 +64,17 @@ def remove_entry(entry_id):
         else:
             return redirect("/entry/" + str(entry_id))
 
+@app.route("/find_entry")
+def find_entry():
+    query = request.args.get("query")
+    print(query)
+    if query:
+        results = entries.find_entries(query)
+    else:
+        query = ""
+        results = []
+    print(results)
+    return render_template("find_entry.html", query=query, results=results)
 
 @app.route("/register")
 def register():

@@ -5,6 +5,17 @@ def new_entry(title, artist, comment, user_id):
             VALUES (?, ?, ?, ?)"""
     db.execute(sql, [title, artist, comment, user_id])
 
+def find_entries(query):
+    sql = """SELECT e.id, e.title, e.artist, u.username
+                FROM Entries e, Users u
+                WHERE u.id = e.user_id
+                AND (e.title LIKE ?
+                OR e.artist LIKE ?
+                OR e.comment LIKE ?
+                OR u.username LIKE ?)
+                ORDER BY e.id DESC"""
+    return db.query(sql, ["%" + query + "%"] * 4)
+
 def get_entries():
     sql = """SELECT e.id, e.title, e.artist, u.username
                 FROM Entries e, Users u
