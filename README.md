@@ -1,4 +1,4 @@
-# Musiket
+# Musict
 
 ## Description
 
