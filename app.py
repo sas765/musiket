@@ -2,8 +2,6 @@ from flask import Flask
 from flask import abort, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
-import sqlite3
-import db
 import entries
 import users
 
@@ -139,9 +137,8 @@ def create():
     password_hash = generate_password_hash(password1)
 
     try:
-        sql = "INSERT INTO Users (username, password_hash) VALUES (?, ?)"
-        db.execute(sql, [username, password_hash])
-    except sqlite3.IntegrityError:
+        users.create_user(username, password_hash)
+    except:
         return "ERROR: username already exists"
 
     return "Account created successfully"
@@ -155,16 +152,14 @@ def login():
         username = request.form["username"]
         password = request.form["password"]
 
-        sql = "SELECT id, password_hash FROM Users WHERE username = ?"
-        result = db.query(sql, [username])[0]
-        user_id = result["id"]
-        password_hash = result["password_hash"]
-        if check_password_hash(password_hash, password):
+        user_id = users.check_login(username, password)
+
+        if user_id:
             session["user_id"] = user_id
             session["username"] = username
             return redirect("/")
         else:
-            return "ERROR: wrong password or usernam"
+            return "ERROR: wrong password or username"
 
 @app.route("/logout")
 def logout():
