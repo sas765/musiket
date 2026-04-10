@@ -18,6 +18,8 @@ def index():
 @app.route("/entry/<int:entry_id>")
 def entry(entry_id):
     entry = entries.get_entry(entry_id)
+    if not entry:
+        abort(404)
     return render_template("show_entry.html", entry=entry)
 
 @app.route("/new_entry")
@@ -38,6 +40,8 @@ def create_entry():
 @app.route("/edit_entry/<int:entry_id>")
 def edit_entry(entry_id):
     entry = entries.get_entry(entry_id)
+    if not entry:
+        abort(404)
     if entry["user_id"] != session["user_id"]:
         abort(403)
     return render_template("edit_entry.html", entry=entry)
@@ -46,6 +50,8 @@ def edit_entry(entry_id):
 def update_entry():
     entry_id = request.form["entry_id"]
     entry = entries.get_entry(entry_id)
+    if not entry:
+        abort(404)
     if entry["user_id"] != session["user_id"]:
         abort(403)
     title = request.form["title"]
@@ -59,6 +65,8 @@ def update_entry():
 def remove_entry(entry_id):
     if request.method == "GET":
         entry = entries.get_entry(entry_id)
+        if not entry:
+            abort(404)
         if entry["user_id"] != session["user_id"]:
             abort(403)
         return render_template("remove_entry.html", entry=entry)
@@ -66,6 +74,8 @@ def remove_entry(entry_id):
     if request.method == "POST":
         if "remove" in request.form:
             entry = entries.get_entry(entry_id)
+            if not entry:
+                abort(404)
             if entry["user_id"] != session["user_id"]:
                 abort(403)
             entries.remove_entry(entry_id)

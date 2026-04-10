@@ -32,7 +32,8 @@ def get_entry(entry_id):
                     u.id user_id
                 FROM Entries e, Users u
                 WHERE u.id = e.user_id AND e.id = ?"""
-    return db.query(sql, [entry_id])[0]
+    result = db.query(sql, [entry_id])
+    return result[0] if result else None
 
 def update_entry(title, artist, comment, entry_id):
     sql = """UPDATE Entries SET title = ?,
