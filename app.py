@@ -14,6 +14,14 @@ def require_login():
     if "user_id" not in session:
         abort(403)
 
+def check_length(title, artist, comment):
+    if not title or len(title) > 100:
+        abort(403)
+    if not artist or len(artist) > 75:
+        abort(403)
+    if len(comment) > 2500:
+        abort(403)
+
 @app.route("/")
 def index():
     all_entries = entries.get_entries()
@@ -40,6 +48,7 @@ def create_entry():
     comment = request.form["comment"]
     user_id = session["user_id"]
 
+    check_length(title, artist, comment)
     entries.new_entry(title, artist, comment, user_id)
 
     return redirect("/")
@@ -66,6 +75,7 @@ def update_entry():
     title = request.form["title"]
     artist = request.form["artist"]
     comment = request.form["comment"]
+    check_length(title, artist, comment)
     entries.update_entry(title, artist, comment, entry_id)
 
     return redirect("/entry/" + str(entry_id))

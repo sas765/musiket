@@ -11,15 +11,15 @@
   <form action="/update_entry" method="post">
     <p>
       Title: <br />
-      <input type="text" name="title" size="50" value="{{ entry.title }}" />
+      <input type="text" name="title" size="50" value="{{ entry.title }}" maxlength="100" required/>
     </p>
     <p>
       Artist: <br />
-      <input type="text" name="artist" value="{{ entry.artist }}" />
+      <input type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
     </p>
     <p>
       Comment: <br />
-      <textarea name="comment" rows="8" cols="60">{{ entry.comment }}</textarea>
+      <textarea name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
     </p>
     <input type="hidden" name="entry_id" value="{{ entry.id }}">
     <input type="submit" value="Update entry" />
