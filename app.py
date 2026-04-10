@@ -10,6 +10,10 @@ import entries
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def require_login():
+    if "user_id" not in session:
+        abort(403)
+
 @app.route("/")
 def index():
     all_entries = entries.get_entries()
@@ -24,10 +28,13 @@ def entry(entry_id):
 
 @app.route("/new_entry")
 def new_entry():
+    require_login()
     return render_template("new_entry.html")
 
 @app.route("/create_entry", methods=["POST"])
 def create_entry():
+    require_login()
+
     title = request.form["title"]
     artist = request.form["artist"]
     comment = request.form["comment"]
@@ -39,6 +46,7 @@ def create_entry():
 
 @app.route("/edit_entry/<int:entry_id>")
 def edit_entry(entry_id):
+    require_login()
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
@@ -48,6 +56,7 @@ def edit_entry(entry_id):
 
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
+    require_login()
     entry_id = request.form["entry_id"]
     entry = entries.get_entry(entry_id)
     if not entry:
@@ -63,6 +72,8 @@ def update_entry():
 
 @app.route("/remove_entry/<int:entry_id>", methods=["GET", "POST"])
 def remove_entry(entry_id):
+    require_login()
+
     if request.method == "GET":
         entry = entries.get_entry(entry_id)
         if not entry:
@@ -138,6 +149,7 @@ def login():
 
 @app.route("/logout")
 def logout():
-    del session["user_id"]
-    del session["username"]
+    if "user_id" in session:
+        del session["user_id"]
+        del session["username"]
     return redirect("/")
