@@ -5,6 +5,7 @@ import config
 import sqlite3
 import db
 import entries
+import users
 
 
 app = Flask(__name__)
@@ -26,6 +27,14 @@ def check_length(title, artist, comment):
 def index():
     all_entries = entries.get_entries()
     return render_template("index.html", entries=all_entries)
+
+@app.route("/user/<int:user_id>")
+def show_user(user_id):
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+    collection = users.get_collection(user_id)
+    return render_template("show_user.html", user=user, collection=collection)
 
 @app.route("/entry/<int:entry_id>")
 def entry(entry_id):

@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ user.username }}</title>
+</head>
+
+<body>
+  <h1>{{ user.username }}</h1>
+  <p>
+    User {{ user.username }} has {{ collection | count }} entries in their collection.
+  </p>
+
+  <ul>
+    {% for entry in collection %}
+    <li><a href="/entry/{{ entry.id }}">{{ entry.title }}</a> by {{ entry.artist }}</li>
+    {% endfor %}
+  </ul>
+
+  <p>
+    <a href="/">Back</a>
+  </p>
+</body>
+
+</html>

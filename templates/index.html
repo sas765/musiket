@@ -36,7 +36,7 @@
 
   <ul>
     {% for entry in entries %}
-    <li>{{ entry.username }} added
+    <li><a href="/user/{{ entry.user_id }}">{{ entry.username }}</a> added
       <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
       by {{ entry.artist }} to their collection.
     </li>

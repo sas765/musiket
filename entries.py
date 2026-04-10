@@ -17,7 +17,7 @@ def find_entries(query):
     return db.query(sql, ["%" + query + "%"] * 4)
 
 def get_entries():
-    sql = """SELECT e.id, e.title, e.artist, u.username
+    sql = """SELECT e.id, e.title, e.artist, e.user_id, u.username
                 FROM Entries e, Users u
                 WHERE u.id = e.user_id
                 ORDER BY e.id DESC"""
