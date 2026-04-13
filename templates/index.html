@@ -3,45 +3,43 @@
 
 <head>
   <title>Musiket - The musical market square</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <h1>Musiket</h1>
-
-  {% if session.username %}
-  <p>
-    Logged in as {{ session.username }}
-  </p>
-
-  <p>
-    <a href="/logout">Log out</a>
-  </p>
-
-  <p>
-    <a href="/new_entry">Add music to your collection</a>
-  </p>
-
-  {% else %}
-  <p>
-  <a href="/login">Log in</a>
-  <a href="/register">Register</a>
-  </p>
-  {% endif %}
-
-  <p>
-    <a href="/find_entry">Find entries</a>
-  </p>
-
-  <h2>Recent entries</h2>
-
-  <ul>
+  <div class="header">
+    <h1>Musiket</h1>
+  </div>
+  <div class="nav">
+    {% if session.username %}
+    <p>
+      <a href="/user/{{ session.user_id }}">{{ session.username }}</a>
+      |
+      <a href="/logout">Log out</a>
+      |
+      <a href="/new_entry">Add music to your collection</a>
+    </p>
+    {% else %}
+    <p>
+      <a href="/login">Log in</a>
+      |
+      <a href="/register">Register</a>
+    </p>
+    {% endif %}
+    <p>
+      <a href="/find_entry">Find entries</a>
+    </p>
+  </div>
+  <div class="content">
+    <h2>Recent entries</h2>
     {% for entry in entries %}
-    <li><a href="/user/{{ entry.user_id }}">{{ entry.username }}</a> added
+    <div class="entry">
+      <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a> added
       <a href="/entry/{{ entry.id }}">{{ entry.title }}</a>
       by {{ entry.artist }} to their collection.
-    </li>
+    </div>
     {% endfor %}
-  </ul>
+  </div>
 </body>
 
 </html>

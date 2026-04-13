@@ -3,31 +3,40 @@
 
 <head>
   <title>Log in</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <h1>Log in</h1>
-  {% if session.username %}
-  <p>
-    Already logged in as {{ session.username }}
-  </p>
-  <p>
-    <a href="/">Title page</a>
-    <a href="/logout">Log out</a>
-  </p>
-  {% else %}
-  <form action="/login" method="post">
+  <div class="header">
+    <h1>Log in</h1>
+  </div>
+  <div class="nav">
     <p>
-      Username: <br />
-      <input type="text" name="username" />
+      <a href="/">Front page</a>
+    </p>
+  </div>
+  <div class="content">
+    {% if session.username %}
+    <p>
+      Already logged in as {{ session.username }}
     </p>
     <p>
-      Password: <br />
-      <input type="password" name="password" />
+      <a href="/logout">Log out</a>
     </p>
-    <input type="submit" value="Kirjaudu" />
-  </form>
-  {% endif %}
+    {% else %}
+    <form action="/login" method="post">
+      <p>
+        Username: <br />
+        <input type="text" name="username" />
+      </p>
+      <p>
+        Password: <br />
+        <input type="password" name="password" />
+      </p>
+      <input type="submit" value="Kirjaudu" />
+    </form>
+    {% endif %}
+  </div>
 </body>
 
 </html>

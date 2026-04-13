@@ -3,29 +3,38 @@
 
 <head>
   <title>{{ entry.title }}</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <h1>{{ entry.title }}</h1>
-  <h2>by {{ entry.artist }}</h2>
-
-  {% if session.user_id == entry.user_id %}
-  <p>
-    <a href="/edit_entry/{{ entry.id }}">Edit entry</a>
-    <a href="/remove_entry/{{ entry.id }}">Remove entry</a>
-  </p>
-  {% endif %}
-
-  <p>
-    {{ entry.comment }}
-  </p>
-  <p>
-    In <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a>'s collection
-  </p>
-
-  <p>
-    <a href="/">Back</a>
-  </p>
+  <div class="header">
+    <h1>{{ entry.title }}</h1>
+    <h2>by {{ entry.artist }}</h2>
+  </div>
+  <div class="nav">
+    <p>
+      <a href="/">Front page</a>
+    </p>
+  </div>
+  <div class="content">
+    {% if session.user_id == entry.user_id %}
+    <p>
+      <a href="/edit_entry/{{ entry.id }}">Edit entry</a>
+      <a href="/remove_entry/{{ entry.id }}">Remove entry</a>
+    </p>
+    {% endif %}
+    <div class="entry">
+      <p>Comment:</p>
+      <div class="comment">
+        <p>
+        {{ entry.comment }}
+        </p>
+      </div>
+      <p>
+        In <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a>'s collection
+      </p>
+    </div>
+  </div>
 </body>
 
 </html>

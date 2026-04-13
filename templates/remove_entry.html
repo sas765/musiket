@@ -3,20 +3,31 @@
 
 <head>
   <title>Edit entry in your collection</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
+  <div class="header">
+    <h1>Remove entry</h1>
+  </div>
+  <div class="nav">
+    <p>
+      <a href="/">Front page</a>
+    </p>
+  </div>
   {% if session.user_id == entry.user_id %}
-  <h1>Remove entry in your collection</h1>
-  <h2>{{ entry.title }} by {{ entry.artist }}</h2>
-  <p>Are you sure you want to remove this entry from your collection?</p>
-  <form action="/remove_entry/{{ entry.id }}" method="post">
-    <input type="submit" name="remove" value="Remove entry">
-    <input type="submit" name="cancel" value="Cancel">
-  </form>
+  <div class="content">
+    <h2>{{ entry.title }} by {{ entry.artist }}</h2>
+    <p>Are you sure you want to remove this entry from your collection?</p>
+    <form action="/remove_entry/{{ entry.id }}" method="post">
+      <input type="submit" name="remove" value="Remove entry">
+      <input type="submit" name="cancel" value="Cancel">
+    </form>
+  </div>
   {% else %}
+  <div class="content">
   <p>You don't have permission to remove this entry.</p>
-  <a href="/">Back</a>
+  </div>
   {% endif %}
 </body>
 

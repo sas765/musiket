@@ -3,31 +3,42 @@
 
 <head>
   <title>Edit entry in your collection</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  {% if session.user_id == entry.user_id %}
-  <h1>Edit entry in your collection</h1>
-  <form action="/update_entry" method="post">
+  <div class="header">
+  <h1>Edit entry</h1>
+  </div>
+  <div class="nav">
     <p>
-      Title: <br />
-      <input type="text" name="title" size="50" value="{{ entry.title }}" maxlength="100" required/>
+      <a href="/entry/{{ entry.id }}">Back to entry</a>
+      |
+      <a href="/">Front page</a>
     </p>
-    <p>
-      Artist: <br />
-      <input type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
-    </p>
-    <p>
-      Comment: <br />
-      <textarea name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
-    </p>
-    <input type="hidden" name="entry_id" value="{{ entry.id }}">
-    <input type="submit" value="Update entry" />
-  </form>
-  {% else %}
-  <p>You don't have permission to edit this entry.</p>
-  <a href="/">Back</a>
-  {% endif %}
+  </div>
+  <div class="content">
+    {% if session.user_id == entry.user_id %}
+    <form action="/update_entry" method="post">
+      <p>
+        Title: <br />
+        <input type="text" name="title" size="50" value="{{ entry.title }}" maxlength="100" required/>
+      </p>
+      <p>
+        Artist: <br />
+        <input type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
+      </p>
+      <p>
+        Comment: <br />
+        <textarea name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
+      </p>
+      <input type="hidden" name="entry_id" value="{{ entry.id }}">
+      <input type="submit" value="Update entry" />
+    </form>
+    {% else %}
+    <p>You don't have permission to edit this entry.</p>
+    {% endif %}
+  </div>
 </body>
 
 </html>

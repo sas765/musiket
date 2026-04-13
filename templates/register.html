@@ -3,25 +3,35 @@
 
 <head>
   <title>Register</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <h1>Register</h1>
-  <form action="/create" method="post">
+  <div class="header">
+    <h1>Register</h1>
+  </div>
+  <div class="nav">
     <p>
-      Username: <br />
-      <input type="text" name="username" />
+      <a href="/">Front page</a>
     </p>
-    <p>
-      Password: <br />
-      <input type="password" name="password1" />
-    </p>
-    <p>
-      Confirm password: <br />
-      <input type="password" name="password2" />
-    </p>
-    <input type="submit" value="Create account" />
-  </form>
+  </div>
+  <div class="content">
+    <form action="/create" method="post">
+      <p>
+        Username: <br />
+        <input type="text" name="username" />
+      </p>
+      <p>
+        Password: <br />
+        <input type="password" name="password1" />
+      </p>
+      <p>
+        Confirm password: <br />
+        <input type="password" name="password2" />
+      </p>
+      <input type="submit" value="Create account" />
+    </form>
+  </div>
 </body>
 
 </html>

@@ -3,36 +3,40 @@
 
 <head>
   <title>Find entry</title>
+  <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
-  <h1>Find entry</h1>
+  <div class="header">
+    <h1>Find entry</h1>
+  </div>
+  <div class="nav">
+    <form action="/find_entry" method="get">
+      <p>
+        Keyword: <input type="text" name="query">
+      </p>
+      <input type="submit" value="Search">
+    </form>
 
-  <form action="/find_entry" method="get">
     <p>
-      Keyword: <input type="text" name="query">
+      <a href="/">Back</a>
     </p>
-    <input type="submit" value="Search">
-</form>
+  </div>
+  {% if query %}
+  <div class="content">
+    <h2>Results</h2>
 
-<p>
-  <a href="/">Back</a>
-</p>
 
-{% if query %}
-  <h2>Results</h2>
-
-<ul>
-  {% for entry in results %}
-  <li>
-    <a href="/entry/{{ entry.id }}">
+    {% for entry in results %}
+    <div class="entry">
+      <a href="/entry/{{ entry.id }}">
       {{ entry.title }} by {{ entry.artist }}
-    </a>
-    in {{ entry.username }}'s collection
-  </li>
-  {% endfor %}
-</ul>
-{% endif %}
+      </a>
+      in <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a>'s collection
+    </div>
+    {% endfor %}
+  </div>
+  {% endif %}
 </body>
 
 </html>

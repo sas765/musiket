@@ -6,7 +6,7 @@ def new_entry(title, artist, comment, user_id):
     db.execute(sql, [title, artist, comment, user_id])
 
 def find_entries(query):
-    sql = """SELECT e.id, e.title, e.artist, u.username
+    sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
                 FROM Entries e, Users u
                 WHERE u.id = e.user_id
                 AND (e.title LIKE ?

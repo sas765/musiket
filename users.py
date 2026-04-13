@@ -27,7 +27,8 @@ def get_user(user_id):
 def get_collection(user_id):
     sql = """SELECT id,
                     title,
-                    artist
+                    artist,
+                    comment
                 FROM Entries
                 WHERE user_id = ?
                 ORDER BY id DESC"""

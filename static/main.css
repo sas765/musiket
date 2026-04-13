@@ -1,0 +1,40 @@
+body {
+  margin: auto;
+  max-width: 50em;
+  font-family: sans-serif;
+  background-color: lightblue;
+}
+
+.header {
+  background-color: white;
+  padding: 1em;
+  margin: 0.5em 0;
+}
+
+.nav {
+  background-color: white;
+  padding: 0.5em;
+  margin: 0.5em 0;
+}
+
+.content {
+  background-color: white;
+  padding: 1em;
+  margin: 0.5em 0;
+}
+
+.entry {
+  border: 2px solid black;
+  margin: 1em;
+  padding: 0.2em 0.5em;
+}
+
+.comment {
+    background-color: gainsboro;
+    margin: 0.2em 0;
+    padding: 0.2em 0.2em
+}
+
+h1, h2 {
+    margin: 0;
+}
