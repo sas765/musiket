@@ -1,9 +1,33 @@
 import db
 
-def new_entry(title, artist, comment, user_id):
+def new_entry(title, artist, comment, user_id, classes):
     sql = """INSERT INTO Entries (title, artist, comment, user_id)
             VALUES (?, ?, ?, ?)"""
     db.execute(sql, [title, artist, comment, user_id])
+
+    entry_id = db.last_insert_id()
+
+    sql = """INSERT INTO Entry_classes (entry_id, title, value)
+                VALUES (?, ?, ?)"""
+    for title, value in classes:
+        db.execute(sql, [entry_id, title, value])
+
+def get_all_classes():
+    sql = "SELECT title, value FROM Classes ORDER BY id"
+    result = db.query(sql)
+
+    classes = {}
+    for title, value in result:
+        if title not in classes:
+            classes[title] = []
+        classes[title].append(value)
+
+    return classes
+
+def get_classes(entry_id):
+    sql = """SELECT title, value FROM Entry_classes
+                WHERE entry_id = ?"""
+    return db.query(sql, [entry_id])
 
 def find_entries(query):
     sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id

@@ -24,7 +24,17 @@
     </p>
     {% endif %}
     <div class="entry">
-      <p>Comment:</p>
+      {% if classes %}
+      <p>
+        About release:
+        <ul>
+          {% for class in classes %}
+          <li>{{ class.title }}: {{ class.value }}</li>
+          {% endfor %}
+        </ul>
+      </p>
+      {% endif %}
+      <p>User comment:</p>
       <div class="comment">
         <p>
         {{ entry.comment }}

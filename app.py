@@ -39,12 +39,14 @@ def entry(entry_id):
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
-    return render_template("show_entry.html", entry=entry)
+    classes = entries.get_classes(entry_id)
+    return render_template("show_entry.html", entry=entry, classes=classes)
 
 @app.route("/new_entry")
 def new_entry():
     require_login()
-    return render_template("new_entry.html")
+    classes = entries.get_all_classes()
+    return render_template("new_entry.html", classes=classes)
 
 @app.route("/create_entry", methods=["POST"])
 def create_entry():
@@ -55,8 +57,14 @@ def create_entry():
     comment = request.form["comment"]
     user_id = session["user_id"]
 
+    classes = []
+    for option in request.form.getlist("classes"):
+        if option:
+            title, value = option.split(":")
+            classes.append((title, value))
+
     check_length(title, artist, comment)
-    entries.new_entry(title, artist, comment, user_id)
+    entries.new_entry(title, artist, comment, user_id, classes)
 
     return redirect("/")
 

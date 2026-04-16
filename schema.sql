@@ -11,3 +11,16 @@ CREATE TABLE Entries (
     comment TEXT,
     user_id INTEGER REFERENCES Users
 );
+
+CREATE TABLE Entry_classes (
+    id INTEGER PRIMARY KEY,
+    entry_id INTEGER REFERENCES Entries,
+    title TEXT,
+    value TEXT
+);
+
+CREATE TABLE Classes (
+    id INTEGER PRIMARY KEY,
+    title TEXT,
+    value TEXT
+);
