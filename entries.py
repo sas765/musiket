@@ -89,9 +89,10 @@ def get_discussion(entry_id):
     return db.query(sql, [entry_id])
 
 def get_message(message_id):
-    sql = """SELECT id, content, sent_at, user_id, entry_id
-                FROM Messages
-                WHERE id = ?"""
+    sql = """SELECT m.id, m.content, m.sent_at, m.user_id, m.entry_id, u.username
+                FROM Messages m, Users u
+                WHERE m.id = ?
+                AND u.id = m.user_id"""
     return db.query(sql, [message_id])[0]
 
 def add_message(content, user_id, entry_id):
@@ -102,3 +103,7 @@ def add_message(content, user_id, entry_id):
 def update_message(message_id, content):
     sql = "UPDATE Messages SET content = ? WHERE id = ?"
     db.execute(sql, [content, message_id])
+
+def remove_message(message_id):
+    sql = "DELETE FROM Messages WHERE id = ?"
+    db.execute(sql, [message_id])

@@ -30,5 +30,5 @@ CREATE TABLE Messages (
     content TEXT,
     sent_at TEXT,
     user_id INTEGER REFERENCES Users,
-    entry_id REFERENCES Entries
+    entry_id INTEGER REFERENCES Entries
 );

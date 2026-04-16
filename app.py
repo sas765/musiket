@@ -180,6 +180,19 @@ def edit_message(message_id):
         entries.update_message(message["id"], content)
         return redirect("/entry/" + str(message["entry_id"]))
 
+@app.route("/remove_message/<int:message_id>", methods=["GET", "POST"])
+def remove_message(message_id):
+    message = entries.get_message(message_id)
+    entry = entries.get_entry(message["entry_id"])
+
+    if request.method == "GET":
+        return render_template("remove_message.html", message=message, entry=entry)
+
+    if request.method == "POST":
+        if "continue" in request.form:
+            entries.remove_message(message["id"])
+        return redirect("/entry/" + str(message["entry_id"]))
+
 @app.route("/register")
 def register():
     return render_template("register.html")
