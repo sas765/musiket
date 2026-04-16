@@ -76,7 +76,15 @@ def edit_entry(entry_id):
         abort(404)
     if entry["user_id"] != session["user_id"]:
         abort(403)
-    return render_template("edit_entry.html", entry=entry)
+
+    all_classes = entries.get_all_classes()
+    classes = {}
+    for my_class in all_classes:
+        classes[my_class] = ""
+    for key in entries.get_classes(entry_id):
+        classes[key["title"]] = key["value"]
+
+    return render_template("edit_entry.html", entry=entry, all_classes=all_classes, classes=classes)
 
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
@@ -91,7 +99,14 @@ def update_entry():
     artist = request.form["artist"]
     comment = request.form["comment"]
     check_length(title, artist, comment)
-    entries.update_entry(title, artist, comment, entry_id)
+
+    classes = []
+    for option in request.form.getlist("classes"):
+        if option:
+            title, value = option.split(":")
+            classes.append((title, value))
+
+    entries.update_entry(title, artist, comment, entry_id, classes)
 
     return redirect("/entry/" + str(entry_id))
 

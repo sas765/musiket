@@ -59,12 +59,20 @@ def get_entry(entry_id):
     result = db.query(sql, [entry_id])
     return result[0] if result else None
 
-def update_entry(title, artist, comment, entry_id):
+def update_entry(title, artist, comment, entry_id, classes):
     sql = """UPDATE Entries SET title = ?,
                                 artist = ?,
                                 comment = ?
                             WHERE id = ?"""
     db.execute(sql, [title, artist, comment, entry_id])
+
+    sql = "DELETE FROM Entry_classes WHERE entry_id = ?"
+    db.execute(sql, [entry_id])
+
+    sql = """INSERT INTO Entry_classes (entry_id, title, value)
+                VALUES (?, ?, ?)"""
+    for title, value in classes:
+        db.execute(sql, [entry_id, title, value])
 
 def remove_entry(entry_id):
     sql = "DELETE FROM Entries WHERE id = ?"

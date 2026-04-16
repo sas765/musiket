@@ -28,6 +28,21 @@
         Artist: <br />
         <input type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
       </p>
+      {% for class in all_classes %}
+      <p>
+        {{ class }}: <br />
+        <select name="classes">
+          <option value="">(Choose)</option>
+        {% for option in all_classes[class] %}
+          {% if classes[class] == option %}
+          <option value="{{ class }}:{{ option }}" selected>{{ option }}</option>
+          {% else %}
+          <option value="{{ class }}:{{ option }}">{{ option }}</option>
+          {% endif %}
+        {% endfor %}
+        </select>
+      </p>
+      {% endfor %}
       <p>
         Comment: <br />
         <textarea name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
