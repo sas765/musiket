@@ -57,10 +57,16 @@ def create_entry():
     comment = request.form["comment"]
     user_id = session["user_id"]
 
+    all_classes = entries.get_all_classes()
+
     classes = []
     for option in request.form.getlist("classes"):
         if option:
             c_title, c_value = option.split(":")
+            if c_title not in all_classes:
+                abort(403)
+            if c_value not in all_classes[c_title]:
+                abort(403)
             classes.append((c_title, c_value))
 
     check_length(title, artist, comment)
@@ -100,10 +106,16 @@ def update_entry():
     comment = request.form["comment"]
     check_length(title, artist, comment)
 
+    all_classes = entries.get_all_classes()
+
     classes = []
     for option in request.form.getlist("classes"):
         if option:
             c_title, c_value = option.split(":")
+            if c_title not in all_classes:
+                abort(403)
+            if c_value not in all_classes[c_title]:
+                abort(403)
             classes.append((c_title, c_value))
 
     entries.update_entry(title, artist, comment, entry_id, classes)
