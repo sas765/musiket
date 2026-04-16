@@ -60,8 +60,8 @@ def create_entry():
     classes = []
     for option in request.form.getlist("classes"):
         if option:
-            title, value = option.split(":")
-            classes.append((title, value))
+            c_title, c_value = option.split(":")
+            classes.append((c_title, c_value))
 
     check_length(title, artist, comment)
     entries.new_entry(title, artist, comment, user_id, classes)
@@ -103,8 +103,8 @@ def update_entry():
     classes = []
     for option in request.form.getlist("classes"):
         if option:
-            title, value = option.split(":")
-            classes.append((title, value))
+            c_title, c_value = option.split(":")
+            classes.append((c_title, c_value))
 
     entries.update_entry(title, artist, comment, entry_id, classes)
 
