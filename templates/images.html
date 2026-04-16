@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Add images</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <div class="header">
+    <h1>Add images</h1>
+  </div>
+  <div class="nav">
+    <p>
+      <a href="/entry/{{ entry.id }}">Back to entry</a>
+      |
+      <a href="/">Front page</a>
+    </p>
+  </div>
+  <div class="content">
+    {% if session.user_id == entry.user_id %}
+    <h2>{{ entry.title}} by {{ entry.artist }}</h2>
+    <form action="/add_image" method="post" enctype="multipart/form-data">
+        <p>
+        Image: <input type="file" name="image" accept=".png" required />
+        </p>
+        <p>
+          Alt text: <br />
+          <input type="text" name="alt" size="50" required>
+        </p>
+        <input type="hidden" name="entry_id" value="{{ entry.id }}">
+        <input type="submit" value="Upload" />
+    </form>
+    <p>This entry has {{ images | count }} images</p>
+    {% endif %}
+  </div>
+</body>
+
+</html>

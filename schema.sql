@@ -32,3 +32,10 @@ CREATE TABLE Messages (
     user_id INTEGER REFERENCES Users,
     entry_id INTEGER REFERENCES Entries
 );
+
+CREATE TABLE Images (
+    id INTEGER PRIMARY KEY,
+    entry_id INTEGER REFERENCES Entries,
+    image BLOB,
+    alt TEXT
+);

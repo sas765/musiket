@@ -107,3 +107,22 @@ def update_message(message_id, content):
 def remove_message(message_id):
     sql = "DELETE FROM Messages WHERE id = ?"
     db.execute(sql, [message_id])
+
+def add_image(entry_id, image, alt):
+    sql = """INSERT INTO Images (entry_id, image, alt)
+                VALUES (?, ?, ?)"""
+    db.execute(sql, [entry_id, image, alt])
+
+def get_image(image_id):
+    sql = """SELECT image, alt FROM Images
+                WHERE id = ?"""
+    return db.query(sql, [image_id])
+
+def update_image(entry_id, image):
+    sql = "UPDATE users SET image = ? WHERE id = ?"
+    db.execute(sql, [image, entry_id])
+
+def get_images(entry_id):
+    sql = """SELECT id FROM Images
+                WHERE entry_id = ?"""
+    return db.query(sql, [entry_id])

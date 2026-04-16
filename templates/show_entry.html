@@ -19,6 +19,7 @@
   <div class="content">
     {% if session.user_id == entry.user_id %}
     <p>
+      <a href="/images/{{ entry.id }}">Images</a>
       <a href="/edit_entry/{{ entry.id }}">Edit entry</a>
       <a href="/remove_entry/{{ entry.id }}">Remove entry</a>
     </p>
@@ -34,6 +35,9 @@
         </ul>
       </p>
       {% endif %}
+      {% for image in images %}
+      <img src="/image/{{ image.id }}" alt="{{ image.alt }}" />
+      {% endfor %}
       <div class="comment">
         <p>User comment:</p>
         <hr />

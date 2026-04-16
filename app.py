@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import abort, redirect, render_template, request, session
+from flask import abort, make_response, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash, check_password_hash
 import config
 import entries
@@ -39,13 +39,14 @@ def show_user(user_id):
     return render_template("show_user.html", user=user, collection=collection)
 
 @app.route("/entry/<int:entry_id>")
-def entry(entry_id):
+def show_entry(entry_id):
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
     classes = entries.get_classes(entry_id)
     discussion = entries.get_discussion(entry_id)
-    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion)
+    images = entries.get_images(entry_id)
+    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion, images=images)
 
 @app.route("/new_entry")
 def new_entry():
@@ -150,6 +151,48 @@ def remove_entry(entry_id):
             return redirect("/")
         else:
             return redirect("/entry/" + str(entry_id))
+
+@app.route("/images/<int:entry_id>")
+def edit_images(entry_id):
+    require_login()
+    entry = entries.get_entry(entry_id)
+    if not entry:
+        abort(404)
+    if entry["user_id"] != session["user_id"]:
+        abort(403)
+    images = entries.get_images(entry_id)
+    return render_template("images.html", entry=entry, images=images)
+
+@app.route("/image/<int:image_id>")
+def show_image(image_id):
+    image = entries.get_image(image_id)
+    if not image:
+        abort(404)
+
+    response = make_response(bytes(image[0][0]))
+    response.headers.set("Content-Type", "image/png")
+    return response
+
+@app.route("/add_image", methods=["POST"])
+def add_image():
+    require_login()
+    entry_id = request.form["entry_id"]
+    entry = entries.get_entry(entry_id)
+
+    if entry["user_id"] != session["user_id"]:
+        abort(403)
+
+    alt = request.form["alt"]
+    file = request.files["image"]
+    if not file.filename.endswith(".png"):
+        return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file format")
+
+    image = file.read()
+    if len(image) > 100 * 1024:
+        return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file size")
+
+    entries.add_image(entry_id, image, alt)
+    return redirect("/entry/" + str(entry_id))
 
 @app.route("/find_entry")
 def find_entry():
