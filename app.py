@@ -85,8 +85,8 @@ def edit_entry(entry_id):
 
     all_classes = entries.get_all_classes()
     classes = {}
-    for my_class in all_classes:
-        classes[my_class] = ""
+    for c_class in all_classes:
+        classes[c_class] = ""
     for key in entries.get_classes(entry_id):
         classes[key["title"]] = key["value"]
 

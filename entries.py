@@ -75,5 +75,7 @@ def update_entry(title, artist, comment, entry_id, classes):
         db.execute(sql, [entry_id, title, value])
 
 def remove_entry(entry_id):
+    sql = "DELETE FROM Entry_classes WHERE entry_id = ?"
+    db.execute(sql, [entry_id])
     sql = "DELETE FROM Entries WHERE id = ?"
     db.execute(sql, [entry_id])
