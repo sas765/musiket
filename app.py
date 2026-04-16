@@ -21,6 +21,10 @@ def check_length(title, artist, comment):
     if len(comment) > 2500:
         abort(403)
 
+def check_message(content):
+    if not content or len(content) > 250:
+        abort(403)
+
 @app.route("/")
 def index():
     all_entries = entries.get_entries()
@@ -150,7 +154,6 @@ def remove_entry(entry_id):
 @app.route("/find_entry")
 def find_entry():
     query = request.args.get("query")
-    print(query)
     if query:
         results = entries.find_entries(query)
     else:
@@ -161,29 +164,39 @@ def find_entry():
 
 @app.route("/new_message", methods=["POST"])
 def new_message():
+    require_login()
     content = request.form["content"]
     user_id = session["user_id"]
     entry_id = request.form["entry_id"]
+
+    check_message(content)
 
     entries.add_message(content, user_id, entry_id)
     return redirect("/entry/" + str(entry_id))
 
 @app.route("/edit_message/<int:message_id>", methods=["GET", "POST"])
 def edit_message(message_id):
+    require_login()
     message = entries.get_message(message_id)
+    if session["user_id"] != message["user_id"]:
+        abort(403)
 
     if request.method == "GET":
         return render_template("edit_message.html", message=message)
 
     if request.method == "POST":
         content = request.form["content"]
+        check_message(content)
         entries.update_message(message["id"], content)
         return redirect("/entry/" + str(message["entry_id"]))
 
 @app.route("/remove_message/<int:message_id>", methods=["GET", "POST"])
 def remove_message(message_id):
+    require_login()
     message = entries.get_message(message_id)
     entry = entries.get_entry(message["entry_id"])
+    if session["user_id"] != message["user_id"]:
+        abort(403)
 
     if request.method == "GET":
         return render_template("remove_message.html", message=message, entry=entry)
@@ -203,13 +216,13 @@ def create():
     password1 = request.form["password1"]
     password2 = request.form["password2"]
     if password1 != password2:
-        return "ERROR: passwords don't match"
+        return render_template("error.html", site="/register", reason="passwords don't match")
     password_hash = generate_password_hash(password1)
 
     try:
         users.create_user(username, password_hash)
     except:
-        return "ERROR: username already exists"
+        return render_template("error.html", site="/register", reason="username already exists")
 
     return "Account created successfully"
 
@@ -229,7 +242,7 @@ def login():
             session["username"] = username
             return redirect("/")
         else:
-            return "ERROR: wrong password or username"
+            return render_template("error.html", site="/login", reason="invalid login")
 
 @app.route("/logout")
 def logout():
