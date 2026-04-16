@@ -79,3 +79,26 @@ def remove_entry(entry_id):
     db.execute(sql, [entry_id])
     sql = "DELETE FROM Entries WHERE id = ?"
     db.execute(sql, [entry_id])
+
+def get_discussion(entry_id):
+    sql = """SELECT m.id, m.content, m.sent_at, m.user_id, u.username
+                FROM Messages m, Users u
+                WHERE m.entry_id = ?
+                AND m.user_id = u.id
+                ORDER BY m.id"""
+    return db.query(sql, [entry_id])
+
+def get_message(message_id):
+    sql = """SELECT id, content, sent_at, user_id, entry_id
+                FROM Messages
+                WHERE id = ?"""
+    return db.query(sql, [message_id])[0]
+
+def add_message(content, user_id, entry_id):
+    sql = """INSERT INTO Messages (content, sent_at, user_id, entry_id)
+             VALUES (?, datetime('now'), ?, ?)"""
+    db.execute(sql, [content, user_id, entry_id])
+
+def update_message(message_id, content):
+    sql = "UPDATE Messages SET content = ? WHERE id = ?"
+    db.execute(sql, [content, message_id])

@@ -24,3 +24,11 @@ CREATE TABLE Classes (
     title TEXT,
     value TEXT
 );
+
+CREATE TABLE Messages (
+    id INTEGER PRIMARY KEY,
+    content TEXT,
+    sent_at TEXT,
+    user_id INTEGER REFERENCES Users,
+    entry_id REFERENCES Entries
+);

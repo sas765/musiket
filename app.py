@@ -40,7 +40,8 @@ def entry(entry_id):
     if not entry:
         abort(404)
     classes = entries.get_classes(entry_id)
-    return render_template("show_entry.html", entry=entry, classes=classes)
+    discussion = entries.get_discussion(entry_id)
+    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion)
 
 @app.route("/new_entry")
 def new_entry():
@@ -157,6 +158,27 @@ def find_entry():
         results = []
     print(results)
     return render_template("find_entry.html", query=query, results=results)
+
+@app.route("/new_message", methods=["POST"])
+def new_message():
+    content = request.form["content"]
+    user_id = session["user_id"]
+    entry_id = request.form["entry_id"]
+
+    entries.add_message(content, user_id, entry_id)
+    return redirect("/entry/" + str(entry_id))
+
+@app.route("/edit_message/<int:message_id>", methods=["GET", "POST"])
+def edit_message(message_id):
+    message = entries.get_message(message_id)
+
+    if request.method == "GET":
+        return render_template("edit_message.html", message=message)
+
+    if request.method == "POST":
+        content = request.form["content"]
+        entries.update_message(message["id"], content)
+        return redirect("/entry/" + str(message["entry_id"]))
 
 @app.route("/register")
 def register():

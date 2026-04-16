@@ -45,6 +45,37 @@
       </p>
     </div>
   </div>
+  <div class="discussion">
+    <h2>Discussion</h2>
+    {% for message in discussion %}
+    <p>
+      {{ message.username }} ({{ message.sent_at }}):
+    </p>
+    <p>
+      {{ message.content }}
+    </p>
+    {% if message.user_id == session.user_id %}
+    <p>
+      <a href="/edit_message/{{ message.id }}">Edit</a> |
+      <a href="/remove_message/{{ message.id }}">Delete</a>
+    </p>
+    {% endif %}
+    <hr />
+    {% endfor %}
+    {% if session.user_id %}
+    <h3>Add to the conversation:</h3>
+
+    <form action="/new_message" method="post">
+      <p>
+        Message:<br />
+        <textarea name="content" rows="5" cols="40"></textarea>
+      </p>
+      <input type="hidden" name="entry_id" value="{{ entry.id }}" />
+      <input type="submit" value="Lähetä" />
+    </form>
+    <hr />
+    {% endif %}
+  </div>
 </body>
 
 </html>

@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>Edit message</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <div class="header">
+    <h1>Edit message</h1>
+  </div>
+  <div class="nav">
+    <p>
+      <a href="/entry/{{ message.entry_id }}">Back to entry</a>
+      |
+      <a href="/">Front page</a>
+    </p>
+  </div>
+  <div class="content">
+    <form action="/edit_message/{{ message.id }}" method="post">
+      <p>
+        Viesti:<br />
+        <textarea name="content" rows="5" cols="40">{{ message.content }}</textarea>
+      </p>
+      <input type="submit" value="Edit message" />
+    </form>
+  </div>
+</body>
