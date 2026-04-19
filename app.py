@@ -1,6 +1,7 @@
 from flask import Flask
 from flask import abort, make_response, redirect, render_template, request, session
-from werkzeug.security import generate_password_hash, check_password_hash
+from werkzeug.security import generate_password_hash
+from secrets import token_hex
 import config
 import entries
 import users
@@ -46,13 +47,13 @@ def show_entry(entry_id):
     classes = entries.get_classes(entry_id)
     discussion = entries.get_discussion(entry_id)
     images = entries.get_images(entry_id)
-    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion, images=images)
+    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion, images=images, session=session)
 
 @app.route("/new_entry")
 def new_entry():
     require_login()
     classes = entries.get_all_classes()
-    return render_template("new_entry.html", classes=classes)
+    return render_template("new_entry.html", classes=classes, session=session)
 
 @app.route("/create_entry", methods=["POST"])
 def create_entry():
@@ -62,6 +63,7 @@ def create_entry():
     artist = request.form["artist"]
     comment = request.form["comment"]
     user_id = session["user_id"]
+    csrf_token = request.form["csrf_token"]
 
     all_classes = entries.get_all_classes()
 
@@ -74,6 +76,9 @@ def create_entry():
             if c_value not in all_classes[c_title]:
                 abort(403)
             classes.append((c_title, c_value))
+
+    if csrf_token != session["csrf_token"]:
+        abort(403)
 
     check_length(title, artist, comment)
     entries.new_entry(title, artist, comment, user_id, classes)
@@ -96,16 +101,19 @@ def edit_entry(entry_id):
     for key in entries.get_classes(entry_id):
         classes[key["title"]] = key["value"]
 
-    return render_template("edit_entry.html", entry=entry, all_classes=all_classes, classes=classes)
+    return render_template("edit_entry.html", entry=entry, all_classes=all_classes, classes=classes, session=session)
 
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
     require_login()
     entry_id = request.form["entry_id"]
+    csrf_token = request.form["csrf_token"]
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
     if entry["user_id"] != session["user_id"]:
+        abort(403)
+    if csrf_token != session["csrf_token"]:
         abort(403)
     title = request.form["title"]
     artist = request.form["artist"]
@@ -143,6 +151,9 @@ def remove_entry(entry_id):
     if request.method == "POST":
         if "remove" in request.form:
             entry = entries.get_entry(entry_id)
+            csrf_token = request.form["csrf_token"]
+            if csrf_token != session["csrf_token"]:
+                abort(403)
             if not entry:
                 abort(404)
             if entry["user_id"] != session["user_id"]:
@@ -161,7 +172,7 @@ def edit_images(entry_id):
     if entry["user_id"] != session["user_id"]:
         abort(403)
     images = entries.get_images(entry_id)
-    return render_template("images.html", entry=entry, images=images)
+    return render_template("images.html", entry=entry, images=images, session=session)
 
 @app.route("/image/<int:image_id>")
 def show_image(image_id):
@@ -176,9 +187,12 @@ def show_image(image_id):
 @app.route("/add_image", methods=["POST"])
 def add_image():
     require_login()
+    csrf_token = request.form["csrf_token"]
     entry_id = request.form["entry_id"]
     entry = entries.get_entry(entry_id)
 
+    if csrf_token != session["csrf_token"]:
+        abort(403)
     if entry["user_id"] != session["user_id"]:
         abort(403)
 
@@ -186,7 +200,6 @@ def add_image():
     file = request.files["image"]
     if not file.filename.endswith(".png"):
         return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file format")
-
     image = file.read()
     if len(image) > 100 * 1024:
         return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file size")
@@ -208,10 +221,15 @@ def find_entry():
 @app.route("/new_message", methods=["POST"])
 def new_message():
     require_login()
+    csrf_token = request.form["csrf_token"]
     content = request.form["content"]
     user_id = session["user_id"]
     entry_id = request.form["entry_id"]
 
+    if csrf_token != session["csrf_token"]:
+        abort(403)
+    if user_id != session["user_id"]:
+        abort(403)
     check_message(content)
 
     entries.add_message(content, user_id, entry_id)
@@ -225,10 +243,13 @@ def edit_message(message_id):
         abort(403)
 
     if request.method == "GET":
-        return render_template("edit_message.html", message=message)
+        return render_template("edit_message.html", message=message, session=session)
 
     if request.method == "POST":
         content = request.form["content"]
+        csrf_token = request.form["csrf_token"]
+        if csrf_token != session["csrf_token"]:
+            abort(403)
         check_message(content)
         entries.update_message(message["id"], content)
         return redirect("/entry/" + str(message["entry_id"]))
@@ -242,9 +263,12 @@ def remove_message(message_id):
         abort(403)
 
     if request.method == "GET":
-        return render_template("remove_message.html", message=message, entry=entry)
+        return render_template("remove_message.html", message=message, entry=entry, session=session)
 
     if request.method == "POST":
+        csrf_token = request.form["csrf_token"]
+        if csrf_token != session["csrf_token"]:
+            abort(403)
         if "continue" in request.form:
             entries.remove_message(message["id"])
         return redirect("/entry/" + str(message["entry_id"]))
@@ -283,6 +307,7 @@ def login():
         if user_id:
             session["user_id"] = user_id
             session["username"] = username
+            session["csrf_token"] = token_hex(16)
             return redirect("/")
         else:
             return render_template("error.html", site="/login", reason="invalid login")
@@ -292,4 +317,5 @@ def logout():
     if "user_id" in session:
         del session["user_id"]
         del session["username"]
+
     return redirect("/")

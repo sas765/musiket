@@ -33,6 +33,7 @@
       </p>
       <input type="submit" name="continue" value="Delete" />
       <input type="submit" name="cancel" value="Cancel" />
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
     </form>
   </div>
   {% else %}

@@ -23,6 +23,7 @@
         Viesti:<br />
         <textarea name="content" rows="5" cols="40">{{ message.content }}</textarea>
       </p>
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="submit" value="Edit message" />
     </form>
   </div>
