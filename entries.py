@@ -122,6 +122,10 @@ def update_image(entry_id, image):
     sql = "UPDATE users SET image = ? WHERE id = ?"
     db.execute(sql, [image, entry_id])
 
+def remove_image(entry_id, image_id):
+    sql = "DELETE FROM Images WHERE id = ? AND entry_id = ?"
+    db.execute(sql, [image_id, entry_id])
+
 def get_images(entry_id):
     sql = """SELECT id FROM Images
                 WHERE entry_id = ?"""

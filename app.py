@@ -10,6 +10,14 @@ import users
 app = Flask(__name__)
 app.secret_key = config.secret_key
 
+def check_csrf(csrf_token):
+    if csrf_token != session["csrf_token"]:
+        abort(403)
+
+def check_user(user_id):
+    if user_id != session["user_id"]:
+        abort(403)
+
 def require_login():
     if "user_id" not in session:
         abort(403)
@@ -77,8 +85,7 @@ def create_entry():
                 abort(403)
             classes.append((c_title, c_value))
 
-    if csrf_token != session["csrf_token"]:
-        abort(403)
+    check_csrf(csrf_token)
 
     check_length(title, artist, comment)
     entries.new_entry(title, artist, comment, user_id, classes)
@@ -111,10 +118,8 @@ def update_entry():
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
-    if entry["user_id"] != session["user_id"]:
-        abort(403)
-    if csrf_token != session["csrf_token"]:
-        abort(403)
+    check_user(entry["user_id"])
+    check_csrf(csrf_token)
     title = request.form["title"]
     artist = request.form["artist"]
     comment = request.form["comment"]
@@ -152,12 +157,10 @@ def remove_entry(entry_id):
         if "remove" in request.form:
             entry = entries.get_entry(entry_id)
             csrf_token = request.form["csrf_token"]
-            if csrf_token != session["csrf_token"]:
-                abort(403)
+            check_csrf(csrf_token)
             if not entry:
                 abort(404)
-            if entry["user_id"] != session["user_id"]:
-                abort(403)
+            check_user(entry["user_id"])
             entries.remove_entry(entry_id)
             return redirect("/")
         else:
@@ -169,8 +172,7 @@ def edit_images(entry_id):
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
-    if entry["user_id"] != session["user_id"]:
-        abort(403)
+    check_user(entry["user_id"])
     images = entries.get_images(entry_id)
     return render_template("images.html", entry=entry, images=images, session=session)
 
@@ -179,7 +181,6 @@ def show_image(image_id):
     image = entries.get_image(image_id)
     if not image:
         abort(404)
-
     response = make_response(bytes(image[0][0]))
     response.headers.set("Content-Type", "image/png")
     return response
@@ -191,10 +192,8 @@ def add_image():
     entry_id = request.form["entry_id"]
     entry = entries.get_entry(entry_id)
 
-    if csrf_token != session["csrf_token"]:
-        abort(403)
-    if entry["user_id"] != session["user_id"]:
-        abort(403)
+    check_csrf(csrf_token)
+    check_user(entry["user_id"])
 
     alt = request.form["alt"]
     file = request.files["image"]
@@ -205,7 +204,23 @@ def add_image():
         return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file size")
 
     entries.add_image(entry_id, image, alt)
-    return redirect("/entry/" + str(entry_id))
+    return redirect("/images/" + str(entry_id))
+
+@app.route("/remove_images", methods=["POST"])
+def remove_images():
+    require_login()
+    csrf_token = request.form["csrf_token"]
+    entry_id = request.form["entry_id"]
+    entry = entries.get_entry(entry_id)
+    if not entry:
+        abort(404)
+    check_csrf(csrf_token)
+    check_user(entry["user_id"])
+
+    for image_id in request.form.getlist("image_id"):
+        entries.remove_image(entry_id, image_id)
+
+    return redirect("/images/" + str(entry_id))
 
 @app.route("/find_entry")
 def find_entry():
@@ -215,7 +230,6 @@ def find_entry():
     else:
         query = ""
         results = []
-    print(results)
     return render_template("find_entry.html", query=query, results=results)
 
 @app.route("/new_message", methods=["POST"])
@@ -226,10 +240,8 @@ def new_message():
     user_id = session["user_id"]
     entry_id = request.form["entry_id"]
 
-    if csrf_token != session["csrf_token"]:
-        abort(403)
-    if user_id != session["user_id"]:
-        abort(403)
+    check_csrf(csrf_token)
+    check_user(user_id)
     check_message(content)
 
     entries.add_message(content, user_id, entry_id)
@@ -239,8 +251,7 @@ def new_message():
 def edit_message(message_id):
     require_login()
     message = entries.get_message(message_id)
-    if session["user_id"] != message["user_id"]:
-        abort(403)
+    check_user(message["user_id"])
 
     if request.method == "GET":
         return render_template("edit_message.html", message=message, session=session)
@@ -248,8 +259,7 @@ def edit_message(message_id):
     if request.method == "POST":
         content = request.form["content"]
         csrf_token = request.form["csrf_token"]
-        if csrf_token != session["csrf_token"]:
-            abort(403)
+        check_csrf(csrf_token)
         check_message(content)
         entries.update_message(message["id"], content)
         return redirect("/entry/" + str(message["entry_id"]))
@@ -259,16 +269,14 @@ def remove_message(message_id):
     require_login()
     message = entries.get_message(message_id)
     entry = entries.get_entry(message["entry_id"])
-    if session["user_id"] != message["user_id"]:
-        abort(403)
+    check_user(message["user_id"])
 
     if request.method == "GET":
         return render_template("remove_message.html", message=message, entry=entry, session=session)
 
     if request.method == "POST":
         csrf_token = request.form["csrf_token"]
-        if csrf_token != session["csrf_token"]:
-            abort(403)
+        check_csrf(csrf_token)
         if "continue" in request.form:
             entries.remove_message(message["id"])
         return redirect("/entry/" + str(message["entry_id"]))
@@ -282,6 +290,8 @@ def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
+    if not password1 or not password2:
+        return render_template("error.html", site="/register", reason="please fill all the fields")
     if password1 != password2:
         return render_template("error.html", site="/register", reason="passwords don't match")
     password_hash = generate_password_hash(password1)

@@ -2,13 +2,13 @@
 <html>
 
 <head>
-  <title>Add images</title>
+  <title>Manage images</title>
   <link rel="stylesheet" href="/static/main.css">
 </head>
 
 <body>
   <div class="header">
-    <h1>Add images</h1>
+    <h1>Manage images</h1>
   </div>
   <div class="nav">
     <p>
@@ -21,18 +21,27 @@
     {% if session.user_id == entry.user_id %}
     <h2>{{ entry.title}} by {{ entry.artist }}</h2>
     <form action="/add_image" method="post" enctype="multipart/form-data">
-        <p>
-        Image: <input type="file" name="image" accept=".png" required />
-        </p>
-        <p>
-          Alt text: <br />
-          <input type="text" name="alt" size="50" required>
-        </p>
-        <input type="hidden" name="entry_id" value="{{ entry.id }}">
-        <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-        <input type="submit" value="Upload" />
+      <p>
+      Image: <input type="file" name="image" accept=".png" required />
+      </p>
+      <p>
+        Alt text: <br />
+        <input type="text" name="alt" size="50" required>
+      </p>
+      <input type="hidden" name="entry_id" value="{{ entry.id }}">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="Add image" />
     </form>
     <p>This entry has {{ images | count }} images</p>
+    <form action="/remove_images" method="post">
+      {% for image in images %}
+      <input type="checkbox" name="image_id" value="{{ image.id }}">
+      <img src="/image/{{ image.id }}" />
+      {% endfor %}
+      <input type="hidden" name="entry_id" value="{{ entry.id }}">
+      <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
+      <input type="submit" value="Remove selected images" />
+    </form>
     {% endif %}
   </div>
 </body>
