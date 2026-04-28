@@ -40,12 +40,20 @@ def find_entries(query):
                 ORDER BY e.id DESC"""
     return db.query(sql, ["%" + query + "%"] * 4)
 
-def get_entries():
+def count_entries(user_id="%"):
+    sql = """SELECT COUNT(*) entries FROM Entries
+                WHERE user_id LIKE ?"""
+    return db.query(sql, [user_id])[0]["entries"]
+
+def get_entries(page, page_size):
     sql = """SELECT e.id, e.title, e.artist, e.user_id, u.username
                 FROM Entries e, Users u
                 WHERE u.id = e.user_id
-                ORDER BY e.id DESC"""
-    return db.query(sql)
+                ORDER BY e.id DESC
+                LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [limit, offset])
 
 def get_entry(entry_id):
     sql = """SELECT e.id,

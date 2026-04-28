@@ -26,7 +26,7 @@
     </div>
     {% endif %}
     <p>
-      User {{ user.username }} has {{ collection | count }} entries in their collection.
+      User {{ user.username }} has {{ entry_count }} entries in their collection.
     </p>
     {% for entry in collection %}
     <div class="entry">
@@ -38,6 +38,11 @@
       </div>
     </div>
     {% endfor %}
+    <p>
+      <a href="/user/{{ user.id }}/{{ page - 1 }}">&lt;&lt;</a>
+      Page {{ page }}/{{ page_count }}
+      <a href="/user/{{ user.id }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
   </div>
 </body>
 

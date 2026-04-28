@@ -28,12 +28,15 @@ def get_user(user_id):
     result = db.query(sql, [user_id])
     return result[0] if result else None
 
-def get_collection(user_id):
+def get_collection(user_id, page, page_size):
     sql = """SELECT id,
                     title,
                     artist,
                     comment
                 FROM Entries
                 WHERE user_id = ?
-                ORDER BY id DESC"""
-    return db.query(sql, [user_id])
+                ORDER BY id DESC
+                LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [user_id, limit, offset])

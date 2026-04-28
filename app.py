@@ -2,6 +2,7 @@ from flask import Flask
 from flask import abort, flash, make_response, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash
 from secrets import token_hex
+import math
 import markupsafe
 import config
 import entries
@@ -42,17 +43,41 @@ def show_lines(content):
     return markupsafe.Markup(content)
 
 @app.route("/")
-def index():
-    all_entries = entries.get_entries()
-    return render_template("index.html", entries=all_entries)
+@app.route("/<int:page>")
+def index(page=1):
+    page_size = 15
+    entry_count = entries.count_entries()
+    page_count = math.ceil(entry_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/1")
+    if page > page_count:
+        return redirect("/" + str(page_count))
+    
+    entry_list = entries.get_entries(page, page_size)
+    return render_template("index.html", page=page, page_count=page_count, entries=entry_list)
 
 @app.route("/user/<int:user_id>")
-def show_user(user_id):
+@app.route("/user/<int:user_id>/<int:page>")
+def show_user(user_id, page=1):
+    page_size = 10
     user = users.get_user(user_id)
     if not user:
         abort(404)
-    collection = users.get_collection(user_id)
-    return render_template("show_user.html", user=user, collection=collection)
+
+    entry_count = entries.count_entries(user_id)
+    page_count = math.ceil(entry_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/user/" + str(user_id) + "/1")
+    if page > page_count:
+        return redirect("/user/" + str(user_id) + "/" + str(page_count))
+    
+    collection = users.get_collection(user_id, page, page_size)
+
+    return render_template("show_user.html", user=user, collection=collection, page_count=page_count, page=page, entry_count=entry_count)
 
 @app.route("/entry/<int:entry_id>")
 def show_entry(entry_id):

@@ -48,6 +48,11 @@
       by {{ entry.artist }} to their collection.
     </div>
     {% endfor %}
+    <p>
+      <a href="/{{ page - 1 }}">&lt;&lt;</a>
+      Page {{ page }}/{{ page_count }}
+      <a href="/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
   </div>
 </body>
 
