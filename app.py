@@ -1,5 +1,5 @@
 from flask import Flask
-from flask import abort, make_response, redirect, render_template, request, session
+from flask import abort, flash, make_response, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash
 from secrets import token_hex
 import config
@@ -198,10 +198,12 @@ def add_image():
     alt = request.form["alt"]
     file = request.files["image"]
     if not file.filename.endswith(".png"):
-        return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file format")
+        flash("ERROR: invalid file format")
+        return redirect("/images/" + str(entry_id))
     image = file.read()
     if len(image) > 100 * 1024:
-        return render_template("error.html", site=f"/images/{entry_id}", reason="invalid file size")
+        flash("ERROR: invalid file size")
+        return redirect("/images/" + str(entry_id))
 
     entries.add_image(entry_id, image, alt)
     return redirect("/images/" + str(entry_id))
@@ -290,18 +292,24 @@ def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
+    if len(username) < 4 or len(username) > 16:
+        flash("ERROR: username must be 4-16 characters long")
+        return render_template("register.html")
     if not password1 or not password2:
-        return render_template("error.html", site="/register", reason="please fill all the fields")
+        flash("ERROR: please fill all the fields")
+        return render_template("register.html")
     if password1 != password2:
-        return render_template("error.html", site="/register", reason="passwords don't match")
+        flash("ERROR: passwords don't match")
+        return render_template("register.html")
     password_hash = generate_password_hash(password1)
 
     try:
         users.create_user(username, password_hash)
     except:
-        return render_template("error.html", site="/register", reason="username already exists")
-
-    return "Account created successfully"
+        flash("ERROR: username already exists")
+        return render_template("register.html")
+    flash("Account created successfully")
+    return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
@@ -320,7 +328,8 @@ def login():
             session["csrf_token"] = token_hex(16)
             return redirect("/")
         else:
-            return render_template("error.html", site="/login", reason="invalid login")
+            flash("ERROR: invalid login details")
+            return render_template("login.html")
 
 @app.route("/logout")
 def logout():

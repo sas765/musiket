@@ -18,6 +18,15 @@
     </p>
   </div>
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if session.user_id == entry.user_id %}
     <form action="/update_entry" method="post">
       <p>

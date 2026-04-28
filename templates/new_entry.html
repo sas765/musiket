@@ -16,6 +16,15 @@
     </p>
   </div>
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <form action="/create_entry" method="post">
       <p>
         Title: <br />

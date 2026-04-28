@@ -16,6 +16,15 @@
     </p>
   </div>
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if session.username %}
     <p>
       Already logged in as {{ session.username }}
@@ -27,11 +36,11 @@
     <form action="/login" method="post">
       <p>
         Username: <br />
-        <input type="text" name="username" />
+        <input type="text" name="username" required maxlength="16" />
       </p>
       <p>
         Password: <br />
-        <input type="password" name="password" />
+        <input type="password" name="password" required />
       </p>
       <input type="submit" value="Kirjaudu" />
     </form>

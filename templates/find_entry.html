@@ -24,6 +24,15 @@
   </div>
   {% if query %}
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <h2>Results</h2>
 
 

@@ -17,6 +17,13 @@
       <a href="/">Front page</a>
     </p>
   </div>
+  <div class="flash">
+    {% for message in get_flashed_messages() %}
+    <p>
+      <b>{{ message }}</b>
+    </p>
+    {% endfor %}
+  </div>
   <div class="content">
     <form action="/edit_message/{{ message.id }}" method="post">
       <p>

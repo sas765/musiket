@@ -16,20 +16,28 @@
     </p>
   </div>
   <div class="content">
-  <p>
-    User {{ user.username }} has {{ collection | count }} entries in their collection.
-  </p>
-
-  {% for entry in collection %}
-  <div class="entry">
-  <a href="/entry/{{ entry.id }}">{{ entry.title }}</a> by {{ entry.artist }}
-  <div class="comment">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <p>
-      {{ entry.comment }}
+      User {{ user.username }} has {{ collection | count }} entries in their collection.
     </p>
-  </div>
-  </div>
-  {% endfor %}
+    {% for entry in collection %}
+    <div class="entry">
+      <a href="/entry/{{ entry.id }}">{{ entry.title }}</a> by {{ entry.artist }}
+      <div class="comment">
+        <p>
+          {{ entry.comment }}
+        </p>
+      </div>
+    </div>
+    {% endfor %}
   </div>
 </body>
 

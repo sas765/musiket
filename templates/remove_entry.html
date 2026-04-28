@@ -17,6 +17,15 @@
   </div>
   {% if session.user_id == entry.user_id %}
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <h2>{{ entry.title }} by {{ entry.artist }}</h2>
     <p>Are you sure you want to remove this entry from your collection?</p>
     <form action="/remove_entry/{{ entry.id }}" method="post">

@@ -52,3 +52,11 @@ h1, h2 {
   padding: 1em;
   margin: 0.5em 0;
 }
+
+.flash {
+  -webkit-text-fill-color: white;
+  text-shadow: 1px black;
+  background-color: red;
+  padding: 0.1em 1em;
+  margin: 0.1em;
+}

@@ -17,6 +17,15 @@
     </p>
   </div>
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     {% if session.user_id == entry.user_id %}
     <p>
       <a href="/images/{{ entry.id }}">Images</a>
@@ -71,7 +80,6 @@
     {% endfor %}
     {% if session.user_id %}
     <h3>Add to the conversation:</h3>
-
     <form action="/new_message" method="post">
       <p>
         Message:<br />

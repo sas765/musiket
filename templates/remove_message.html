@@ -17,6 +17,15 @@
   </div>
   {% if session.user_id == message.user_id %}
   <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <h2>{{ entry.title }} in {{ entry.username }}'s collection</h2>
     <div class="message">
       <p>
@@ -39,6 +48,10 @@
   {% else %}
   <div class="content">
     <p>You don't have permission to remove this entry.</p>
+    <p>
+      <a href="/login">Login</a>
+      <a href="/register">Register</a>
+    </p>
   </div>
   {% endif %}
 </body>

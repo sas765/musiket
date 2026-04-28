@@ -6,6 +6,8 @@ def create_user(username, password_hash):
     db.execute(sql, [username, password_hash])
 
 def check_login(username, password):
+    if len(username) < 4 or len(username) > 16:
+        return None
     sql = "SELECT id, password_hash FROM Users WHERE username = ?"
     result = db.query(sql, [username])
     if not result:
