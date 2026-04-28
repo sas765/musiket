@@ -1,5 +1,6 @@
-import db
 from werkzeug.security import check_password_hash
+
+import db
 
 def create_user(username, password_hash):
     sql = "INSERT INTO Users (username, password_hash) VALUES (?, ?)"

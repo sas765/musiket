@@ -1,9 +1,11 @@
+import math
+from secrets import token_hex
+
 from flask import Flask
 from flask import abort, flash, make_response, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash
-from secrets import token_hex
-import math
 import markupsafe
+
 import config
 import entries
 import users
