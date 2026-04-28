@@ -89,8 +89,8 @@ def update_entry(title, artist, comment, entry_id, classes):
 
     sql = """INSERT INTO Entry_classes (entry_id, title, value)
                 VALUES (?, ?, ?)"""
-    for title, value in classes:
-        db.execute(sql, [entry_id, title, value])
+    for c_title, c_value in classes:
+        db.execute(sql, [entry_id, c_title, c_value])
 
 def remove_entry(entry_id):
     sql = "DELETE FROM Entry_classes WHERE entry_id = ?"

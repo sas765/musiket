@@ -79,7 +79,8 @@ def show_user(user_id, page=1):
 
     collection = users.get_collection(user_id, page, page_size)
 
-    return render_template("show_user.html", user=user, collection=collection, page_count=page_count, page=page, entry_count=entry_count)
+    return render_template("show_user.html", user=user, collection=collection,
+                            page_count=page_count, page=page, entry_count=entry_count)
 
 @app.route("/entry/<int:entry_id>")
 def show_entry(entry_id):
@@ -89,7 +90,8 @@ def show_entry(entry_id):
     classes = entries.get_classes(entry_id)
     discussion = entries.get_discussion(entry_id)
     images = entries.get_images(entry_id)
-    return render_template("show_entry.html", entry=entry, classes=classes, discussion=discussion, images=images, session=session)
+    return render_template("show_entry.html", entry=entry, classes=classes,
+                           discussion=discussion, images=images, session=session)
 
 @app.route("/new_entry")
 def new_entry():
@@ -142,7 +144,8 @@ def edit_entry(entry_id):
     for key in entries.get_classes(entry_id):
         classes[key["title"]] = key["value"]
 
-    return render_template("edit_entry.html", entry=entry, all_classes=all_classes, classes=classes, session=session)
+    return render_template("edit_entry.html", entry=entry, all_classes=all_classes,
+                           classes=classes, session=session)
 
 @app.route("/update_entry", methods=["POST"])
 def update_entry():
@@ -197,8 +200,7 @@ def remove_entry(entry_id):
             check_user(entry["user_id"])
             entries.remove_entry(entry_id)
             return redirect("/")
-        else:
-            return redirect("/entry/" + str(entry_id))
+        return redirect("/entry/" + str(entry_id))
 
 @app.route("/images/<int:entry_id>")
 def edit_images(entry_id):
@@ -267,11 +269,7 @@ def find_entry():
     else:
         query = ""
         results = []
-    if order == "1":
-        choice = True
-    else:
-        choice = False
-    return render_template("find_entry.html", query=query, results=results, order=order, choice=choice)
+    return render_template("find_entry.html", query=query, results=results, order=order)
 
 @app.route("/new_message", methods=["POST"])
 def new_message():
@@ -371,9 +369,8 @@ def login():
             session["username"] = username
             session["csrf_token"] = token_hex(16)
             return redirect("/")
-        else:
-            flash("ERROR: invalid login details")
-            return render_template("login.html")
+        flash("ERROR: invalid login details")
+        return render_template("login.html")
 
 @app.route("/logout")
 def logout():

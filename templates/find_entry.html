@@ -23,7 +23,7 @@
     <form action="/find_entry" method="get">
       <p>
         <label for="query">Keyword</label>: <input id="query" type="text" name="query" value="{{ query }}">
-        {% if choice %}
+        {% if order == "1" %}
         <input id="order1" type="radio" name="order" value="0"><label for="order1">newest first</label>
         <input id="order2" type="radio" name="order" value="1" checked><label for="order2">oldest first</label>
         {% else %}
