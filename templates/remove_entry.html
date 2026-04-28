@@ -27,8 +27,12 @@
     </div>
     {% endif %}
     <h2>{{ entry.title }} by {{ entry.artist }}</h2>
-    <p>Are you sure you want to remove this entry from your collection?</p>
     <form action="/remove_entry/{{ entry.id }}" method="post">
+      <label for="submit">
+        <p>
+          Are you sure you want to remove this entry from your collection?
+        </p>
+      </label>
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
       <input type="submit" name="remove" value="Remove entry">
       <input type="submit" name="cancel" value="Cancel">

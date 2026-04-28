@@ -322,10 +322,15 @@ def remove_message(message_id):
 
 @app.route("/register")
 def register():
-    return render_template("register.html")
+    if "user_id" in session:
+        flash("New account won't be created, you're already logged in")
+    return render_template("register.html", session=session)
 
 @app.route("/create", methods=["POST"])
 def create():
+    if "user_id" in session:
+        flash("Account not created: already logged in")
+        return redirect("/")
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]

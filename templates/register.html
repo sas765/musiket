@@ -25,21 +25,28 @@
       {% endfor %}
     </div>
     {% endif %}
+    {% if not session.username %}
     <form action="/create" method="post">
       <p>
-        Username: <br />
-        <input type="text" name="username" maxlength="16" required />
+        <label for="username">Username</label>:<br />
+        <input type="text" name="username" maxlength="16" required minlength="4"/>
       </p>
       <p>
-        Password: <br />
-        <input type="password" name="password1" required />
+        <label for="password1">Password</label>:<br />
+        <input id="password1" type="password" name="password1" required minlength="4"/>
       </p>
       <p>
-        Confirm password: <br />
-        <input type="password" name="password2" required />
+        <label for="password2">Confirm password</label>:<br />
+        <input id="password2" type="password" name="password2" required minlength="4"/>
       </p>
       <input type="submit" value="Create account" />
     </form>
+    {% else %}
+    <p>
+      Already logged in.<br />
+      <a href="/">Front page</a>
+    </p>
+    {% endif %}
   </div>
 </body>
 

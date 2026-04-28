@@ -22,14 +22,13 @@
     {% endif %}
     <form action="/find_entry" method="get">
       <p>
-        Keyword: <input type="text" name="query" value="{{ query }}">
-        Sort by:
+        <label for="query">Keyword</label>: <input id="query" type="text" name="query" value="{{ query }}">
         {% if choice %}
-        <input type="radio" name="order" value="0"> newest
-        <input type="radio" name="order" value="1" checked> oldest
+        <input id="order1" type="radio" name="order" value="0"><label for="order1">newest first</label>
+        <input id="order2" type="radio" name="order" value="1" checked><label for="order2">oldest first</label>
         {% else %}
-        <input type="radio" name="order" value="0" checked> newest
-        <input type="radio" name="order" value="1"> oldest
+        <input id="order1" type="radio" name="order" value="0" checked><label for="order1">newest first</label>
+        <input id="order2" type="radio" name="order" value="1"><label for="order2">oldest first</label>
         {% endif %}
       </p>
       <input type="submit" value="Search">

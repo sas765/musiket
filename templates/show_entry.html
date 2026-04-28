@@ -45,7 +45,7 @@
       </p>
       {% endif %}
       {% for image in images %}
-      <img src="/image/{{ image.id }}" alt="{{ image.alt }}" />
+      <img src="/image/{{ image.id }}" alt="Image: {{ image.alt }}" />
       {% endfor %}
       <div class="comment">
         <p>User comment:</p>
@@ -82,8 +82,8 @@
     <h3>Add to the conversation:</h3>
     <form action="/new_message" method="post">
       <p>
-        Message:<br />
-        <textarea name="content" rows="5" cols="40" maxlength="250" required></textarea>
+        <label for="content">Message</label>:<br />
+        <textarea id="content" name="content" rows="5" cols="40" maxlength="250" required></textarea>
       </p>
       <input type="hidden" name="entry_id" value="{{ entry.id }}" />
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

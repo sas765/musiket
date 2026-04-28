@@ -145,6 +145,6 @@ def remove_image(entry_id, image_id):
     db.execute(sql, [image_id, entry_id])
 
 def get_images(entry_id):
-    sql = """SELECT id FROM Images
+    sql = """SELECT id, alt FROM Images
                 WHERE entry_id = ?"""
     return db.query(sql, [entry_id])

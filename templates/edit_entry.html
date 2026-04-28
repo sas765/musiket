@@ -30,17 +30,17 @@
     {% if session.user_id == entry.user_id %}
     <form action="/update_entry" method="post">
       <p>
-        Title: <br />
-        <input type="text" name="title" size="50" value="{{ entry.title }}" maxlength="100" required/>
+        <label for="title">Title</label>:<br />
+        <input id="title" type="text" name="title" size="50" value="{{ entry.title }}" maxlength="100" required/>
       </p>
       <p>
-        Artist: <br />
-        <input type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
+        <label for="artist">Artist</label>:<br />
+        <input id="artist" type="text" name="artist" value="{{ entry.artist }}" maxlength="75" required/>
       </p>
       {% for class in all_classes %}
       <p>
-        {{ class }}: <br />
-        <select name="classes">
+        <label for="{{ class }}">{{ class }}</label>:<br />
+        <select id="{{ class }}" name="classes">
           <option value="">(Choose)</option>
           {% for option in all_classes[class] %}
           {% if classes[class] == option %}
@@ -53,8 +53,8 @@
       </p>
       {% endfor %}
       <p>
-        Comment: <br />
-        <textarea name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
+        <label for="comment">Comment</label>:<br />
+        <textarea id="comment" name="comment" rows="8" cols="60" maxlength="2500">{{ entry.comment }}</textarea>
       </p>
       <input type="hidden" name="entry_id" value="{{ entry.id }}">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
