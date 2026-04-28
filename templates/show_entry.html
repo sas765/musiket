@@ -51,7 +51,7 @@
         <p>User comment:</p>
         <hr />
         <p>
-        {{ entry.comment }}
+        {{ entry.comment | show_lines }}
         </p>
       </div>
       <p>
@@ -68,7 +68,7 @@
       </p>
       <hr />
       <p>
-        {{ message.content }}
+        {{ message.content | show_lines }}
       </p>
       {% if message.user_id == session.user_id %}
       <p>
@@ -87,7 +87,7 @@
       </p>
       <input type="hidden" name="entry_id" value="{{ entry.id }}" />
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">
-      <input type="submit" value="Lähetä" />
+      <input type="submit" value="Send message" />
     </form>
     <hr />
     {% endif %}

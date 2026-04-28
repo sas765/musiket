@@ -2,6 +2,7 @@ from flask import Flask
 from flask import abort, flash, make_response, redirect, render_template, request, session
 from werkzeug.security import generate_password_hash
 from secrets import token_hex
+import markupsafe
 import config
 import entries
 import users
@@ -33,6 +34,12 @@ def check_length(title, artist, comment):
 def check_message(content):
     if not content or len(content) > 250:
         abort(403)
+
+@app.template_filter()
+def show_lines(content):
+    content = str(markupsafe.escape(content))
+    content = content.replace("\n", "<br />")
+    return markupsafe.Markup(content)
 
 @app.route("/")
 def index():

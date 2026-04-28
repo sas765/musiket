@@ -14,6 +14,12 @@
     <form action="/find_entry" method="get">
       <p>
         Keyword: <input type="text" name="query">
+        Sort by:
+        <select name="sort">
+          <option value="newest">newest</option>
+          <option value="title">title</option>
+          <option value="username">username</option>
+        </select>
       </p>
       <input type="submit" value="Search">
     </form>

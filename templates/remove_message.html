@@ -33,7 +33,7 @@
       </p>
       <hr />
       <p>
-        {{ message.content }}
+        {{ message.content | show_lines }}
       </p>
     </div>
     <form action="/remove_message/{{ message.id }}" method="post">

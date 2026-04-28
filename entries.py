@@ -9,8 +9,8 @@ def new_entry(title, artist, comment, user_id, classes):
 
     sql = """INSERT INTO Entry_classes (entry_id, title, value)
                 VALUES (?, ?, ?)"""
-    for title, value in classes:
-        db.execute(sql, [entry_id, title, value])
+    for c_title, c_value in classes:
+        db.execute(sql, [entry_id, c_title, c_value])
 
 def get_all_classes():
     sql = "SELECT title, value FROM Classes ORDER BY id"
