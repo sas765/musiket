@@ -39,3 +39,7 @@ CREATE TABLE Images (
     image BLOB,
     alt TEXT
 );
+
+CREATE INDEX idx_title ON Entries (title);
+CREATE INDEX idx_artist ON Entries (artist);
+CREATE INDEX idx_username ON Users (username);

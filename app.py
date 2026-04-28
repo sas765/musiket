@@ -54,7 +54,7 @@ def index(page=1):
         return redirect("/1")
     if page > page_count:
         return redirect("/" + str(page_count))
-    
+
     entry_list = entries.get_entries(page, page_size)
     return render_template("index.html", page=page, page_count=page_count, entries=entry_list)
 
@@ -74,7 +74,7 @@ def show_user(user_id, page=1):
         return redirect("/user/" + str(user_id) + "/1")
     if page > page_count:
         return redirect("/user/" + str(user_id) + "/" + str(page_count))
-    
+
     collection = users.get_collection(user_id, page, page_size)
 
     return render_template("show_user.html", user=user, collection=collection, page_count=page_count, page=page, entry_count=entry_count)
@@ -259,12 +259,17 @@ def remove_images():
 @app.route("/find_entry")
 def find_entry():
     query = request.args.get("query")
+    order = request.args.get("order")
     if query:
-        results = entries.find_entries(query)
+        results = entries.find_entries(query, order)
     else:
         query = ""
         results = []
-    return render_template("find_entry.html", query=query, results=results)
+    if order == "1":
+        choice = True
+    else:
+        choice = False
+    return render_template("find_entry.html", query=query, results=results, order=order, choice=choice)
 
 @app.route("/new_message", methods=["POST"])
 def new_message():

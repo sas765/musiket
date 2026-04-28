@@ -29,16 +29,26 @@ def get_classes(entry_id):
                 WHERE entry_id = ?"""
     return db.query(sql, [entry_id])
 
-def find_entries(query):
-    sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
-                FROM Entries e, Users u
-                WHERE u.id = e.user_id
-                AND (e.title LIKE ?
-                OR e.artist LIKE ?
-                OR e.comment LIKE ?
-                OR u.username LIKE ?)
-                ORDER BY e.id DESC"""
-    return db.query(sql, ["%" + query + "%"] * 4)
+def find_entries(query, order):
+    if order == "0":
+        sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
+                    FROM Entries e, Users u
+                    WHERE u.id = e.user_id
+                    AND (e.title LIKE ?
+                    OR e.artist LIKE ?
+                    OR e.comment LIKE ?
+                    OR u.username LIKE ?)
+                    ORDER BY e.id DESC"""
+    else:
+        sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
+                    FROM Entries e, Users u
+                    WHERE u.id = e.user_id
+                    AND (e.title LIKE ?
+                    OR e.artist LIKE ?
+                    OR e.comment LIKE ?
+                    OR u.username LIKE ?)
+                    ORDER BY e.id ASC"""
+    return db.query(sql, ["%" + str(query) + "%"] * 4)
 
 def count_entries(user_id="%"):
     sql = """SELECT COUNT(*) entries FROM Entries

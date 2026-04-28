@@ -11,15 +11,26 @@
     <h1>Find entry</h1>
   </div>
   <div class="nav">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
     <form action="/find_entry" method="get">
       <p>
-        Keyword: <input type="text" name="query">
+        Keyword: <input type="text" name="query" value="{{ query }}">
         Sort by:
-        <select name="sort">
-          <option value="newest">newest</option>
-          <option value="title">title</option>
-          <option value="username">username</option>
-        </select>
+        {% if choice %}
+        <input type="radio" name="order" value="0"> newest
+        <input type="radio" name="order" value="1" checked> oldest
+        {% else %}
+        <input type="radio" name="order" value="0" checked> newest
+        <input type="radio" name="order" value="1"> oldest
+        {% endif %}
       </p>
       <input type="submit" value="Search">
     </form>
@@ -30,15 +41,6 @@
   </div>
   {% if query %}
   <div class="content">
-    {% if get_flashed_messages() %}
-    <div class="flash">
-      {% for message in get_flashed_messages() %}
-      <p>
-        <b>{{ message }}</b>
-      </p>
-      {% endfor %}
-    </div>
-    {% endif %}
     <h2>Results</h2>
 
 
