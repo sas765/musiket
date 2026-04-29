@@ -26,7 +26,9 @@
     </div>
     {% endif %}
     <p>
-      User {{ user.username }} has {{ entry_count }} entries in their collection.
+      User {{ user.username }} has {{ entry_count }} entries in their collection.<br />
+      They've posted {{ message_data.messages }} messages on {{ message_data.entries }} entries.<br />
+      <a href="/discussions/{{ user.id }}">View entries they've discussed</a>
     </p>
     {% for entry in collection %}
     <div class="entry">

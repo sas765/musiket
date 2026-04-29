@@ -39,3 +39,34 @@ def get_collection(user_id, page, page_size):
     limit = page_size
     offset = page_size * (page - 1)
     return db.query(sql, [user_id, limit, offset])
+
+def count_messages(user_id):
+    sql = """SELECT IFNULL(COUNT(m.id), 0) messages,
+                    IFNULL(COUNT(DISTINCT e.id), 0) entries
+                FROM Messages m, Entries e
+                WHERE m.entry_id = e.id
+                AND m.user_id = ?"""
+    return db.query(sql, [user_id])[0]
+
+def get_discussed_entries(user_id, page, page_size):
+    sql = """SELECT DISTINCT e.id FROM Messages m, Entries e
+                WHERE m.entry_id = e.id
+                AND m.user_id = ?
+                ORDER BY m.id DESC"""
+    id_result = db.query(sql, [user_id])
+
+    offset = page_size * (page - 1)
+    limit = page_size + offset
+
+    sql = """SELECT e.id,
+                    e.title,
+                    e.artist,
+                    e.user_id,
+                    u.username
+                FROM Entries e, Users u
+                WHERE e.id = ?
+                AND u.id = e.user_id"""
+    result = []
+    for entry_id in id_result:
+        result.append(db.query(sql, [entry_id[0]])[0])
+    return result[offset:limit]

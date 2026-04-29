@@ -56,7 +56,7 @@ def find_entries(query, order, page, page_size):
 
 def count_results(query, order):
     if order == "0":
-        sql = """SELECT COUNT(e.id) result
+        sql = """SELECT IFNULL(COUNT(e.id), 0) result
                     FROM Entries e, Users u
                     WHERE u.id = e.user_id
                     AND (e.title LIKE ?
@@ -65,7 +65,7 @@ def count_results(query, order):
                     OR u.username LIKE ?)
                     ORDER BY e.id DESC"""
     else:
-        sql = """SELECT count(e.id) result
+        sql = """SELECT IFNULL(COUNT(e.id), 0) result
                     FROM Entries e, Users u
                     WHERE u.id = e.user_id
                     AND (e.title LIKE ?

@@ -43,3 +43,4 @@ CREATE TABLE Images (
 CREATE INDEX idx_title ON Entries (title);
 CREATE INDEX idx_artist ON Entries (artist);
 CREATE INDEX idx_username ON Users (username);
+CREATE INDEX idx_messages ON Messages (entry_id);

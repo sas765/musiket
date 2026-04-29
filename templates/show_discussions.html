@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <title>{{ user.username }}</title>
+  <link rel="stylesheet" href="/static/main.css">
+</head>
+
+<body>
+  <div class="header">
+  <h1>{{ user.username }}'s messages</h1>
+  </div>
+  <div class="nav">
+    <p>
+      <a href="/">Front page</a>
+    </p>
+  </div>
+  <div class="content">
+    {% if get_flashed_messages() %}
+    <div class="flash">
+      {% for message in get_flashed_messages() %}
+      <p>
+        <b>{{ message }}</b>
+      </p>
+      {% endfor %}
+    </div>
+    {% endif %}
+    <p>
+      User <a href="/user/{{ user.id }}">{{ user.username }}</a> has posted {{ message_data.messages }} messages on {{ message_data.entries }} entries.
+    </p>
+    {% for entry in entries %}
+    <div class="entry">
+      <p>
+        <a href="/entry/{{ entry.id }}">{{ entry.title }}</a> by {{ entry.artist }}
+        in <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a>'s collection
+      </p>
+    </div>
+    {% endfor %}
+    <p>
+      <a href="/discussions/{{ user.id }}/{{ page - 1 }}">&lt;&lt;</a>
+      Page {{ page }}/{{ page_count }}
+      <a href="/discussions/{{ user.id }}/{{ page + 1 }}">&gt;&gt;</a>
+    </p>
+  </div>
+</body>
+
+</html>

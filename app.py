@@ -58,7 +58,8 @@ def index(page=1):
         return redirect("/" + str(page_count))
 
     entry_list = entries.get_entries(page, page_size)
-    return render_template("index.html", page=page, page_count=page_count, entries=entry_list)
+    return render_template("index.html", page=page, page_count=page_count,
+                           entries=entry_list, entry_count=entry_count)
 
 @app.route("/user/<int:user_id>")
 @app.route("/user/<int:user_id>/<int:page>")
@@ -79,8 +80,35 @@ def show_user(user_id, page=1):
 
     collection = users.get_collection(user_id, page, page_size)
 
+    message_data = users.count_messages(user_id)
+
     return render_template("show_user.html", user=user, collection=collection,
-                            page_count=page_count, page=page, entry_count=entry_count)
+                            page_count=page_count, page=page, entry_count=entry_count,
+                            message_data=message_data)
+
+@app.route("/discussions/<int:user_id>")
+@app.route("/discussions/<int:user_id>/<int:page>")
+def show_discussions(user_id, page=1):
+    page_size = 10
+    user = users.get_user(user_id)
+    if not user:
+        abort(404)
+
+    message_data = users.count_messages(user_id)
+    entry_count = int(message_data["entries"])
+    page_count = math.ceil(entry_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        return redirect("/user/" + str(user_id) + "/1")
+    if page > page_count:
+        return redirect("/user/" + str(user_id) + "/" + str(page_count))
+
+    user_entries = users.get_discussed_entries(user_id, page, page_size)
+
+    return render_template("show_discussions.html", user=user, entries=user_entries,
+                            page_count=page_count, page=page, entry_count=entry_count,
+                            message_data=message_data)
 
 @app.route("/entry/<int:entry_id>")
 def show_entry(entry_id):
@@ -284,7 +312,7 @@ def find_entry():
     page = min(page, page_count)
 
     return render_template("find_entry.html", query=query, results=results,
-                           order=order, page=page, page_count=page_count)
+                           order=order, page=page, page_count=page_count, entry_count=entry_count)
 
 @app.route("/new_message", methods=["POST"])
 def new_message():
