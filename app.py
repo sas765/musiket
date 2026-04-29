@@ -280,12 +280,11 @@ def find_entry():
     page_count = math.ceil(entry_count / page_size)
     page_count = max(page_count, 1)
 
-    if page < 1:
-        page = 1
-    if page > page_count:
-        page = page_count
+    page = max(page, 1)
+    page = min(page, page_count)
 
-    return render_template("find_entry.html", query=query, results=results, order=order, page=page, page_count=page_count)
+    return render_template("find_entry.html", query=query, results=results,
+                           order=order, page=page, page_count=page_count)
 
 @app.route("/new_message", methods=["POST"])
 def new_message():
