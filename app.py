@@ -262,14 +262,30 @@ def remove_images():
 
 @app.route("/find_entry")
 def find_entry():
+    page_size = 25
     query = request.args.get("query")
     order = request.args.get("order")
+    if "page" in request.args:
+        page = int(request.args.get("page"))
+    else:
+        page = 1
+
     if query:
-        results = entries.find_entries(query, order)
+        results = entries.find_entries(query, order, page, page_size)
     else:
         query = ""
         results = []
-    return render_template("find_entry.html", query=query, results=results, order=order)
+
+    entry_count = entries.count_results(query, order)
+    page_count = math.ceil(entry_count / page_size)
+    page_count = max(page_count, 1)
+
+    if page < 1:
+        page = 1
+    if page > page_count:
+        page = page_count
+
+    return render_template("find_entry.html", query=query, results=results, order=order, page=page, page_count=page_count)
 
 @app.route("/new_message", methods=["POST"])
 def new_message():
@@ -322,9 +338,10 @@ def remove_message(message_id):
 
 @app.route("/register")
 def register():
+    filled = {"username": ""}
     if "user_id" in session:
         flash("New account won't be created, you're already logged in")
-    return render_template("register.html", session=session)
+    return render_template("register.html", session=session, filled=filled)
 
 @app.route("/create", methods=["POST"])
 def create():
@@ -334,29 +351,32 @@ def create():
     username = request.form["username"]
     password1 = request.form["password1"]
     password2 = request.form["password2"]
+    filled = {"username": username}
     if len(username) < 4 or len(username) > 16:
         flash("ERROR: username must be 4-16 characters long")
-        return render_template("register.html")
-    if not password1 or not password2:
-        flash("ERROR: please fill all the fields")
-        return render_template("register.html")
+        return render_template("register.html", filled=filled)
+    if len(password1) < 4 or len(password2) < 4:
+        flash("ERROR: password must be at least 4 characters long")
+        return render_template("register.html", filled=filled)
     if password1 != password2:
         flash("ERROR: passwords don't match")
-        return render_template("register.html")
+        return render_template("register.html", filled=filled)
     password_hash = generate_password_hash(password1)
 
     try:
         users.create_user(username, password_hash)
     except:
         flash("ERROR: username already exists")
-        return render_template("register.html")
+        return render_template("register.html", filled=filled)
     flash("Account created successfully")
     return redirect("/")
 
 @app.route("/login", methods=["GET", "POST"])
 def login():
+    filled = {"username": ""}
+
     if request.method == "GET":
-        return render_template("login.html")
+        return render_template("login.html", filled=filled)
 
     if request.method == "POST":
         username = request.form["username"]
@@ -370,12 +390,15 @@ def login():
             session["csrf_token"] = token_hex(16)
             return redirect("/")
         flash("ERROR: invalid login details")
-        return render_template("login.html")
+        filled = {"username": username}
+        return render_template("login.html", filled=filled)
 
 @app.route("/logout")
 def logout():
     if "user_id" in session:
         del session["user_id"]
         del session["username"]
-
+        flash("Successfully logged out")
+    else:
+        flash("Already logged out")
     return redirect("/")

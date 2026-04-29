@@ -29,7 +29,7 @@ def get_classes(entry_id):
                 WHERE entry_id = ?"""
     return db.query(sql, [entry_id])
 
-def find_entries(query, order):
+def find_entries(query, order, page, page_size):
     if order == "0":
         sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
                     FROM Entries e, Users u
@@ -38,7 +38,8 @@ def find_entries(query, order):
                     OR e.artist LIKE ?
                     OR e.comment LIKE ?
                     OR u.username LIKE ?)
-                    ORDER BY e.id DESC"""
+                    ORDER BY e.id DESC
+                    LIMIT ? OFFSET ?"""
     else:
         sql = """SELECT e.id, e.title, e.artist, u.username, e.user_id
                     FROM Entries e, Users u
@@ -47,13 +48,37 @@ def find_entries(query, order):
                     OR e.artist LIKE ?
                     OR e.comment LIKE ?
                     OR u.username LIKE ?)
+                    ORDER BY e.id ASC
+                    LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, ["%" + str(query) + "%"] * 4 + [limit, offset])
+
+def count_results(query, order):
+    if order == "0":
+        sql = """SELECT COUNT(e.id) result
+                    FROM Entries e, Users u
+                    WHERE u.id = e.user_id
+                    AND (e.title LIKE ?
+                    OR e.artist LIKE ?
+                    OR e.comment LIKE ?
+                    OR u.username LIKE ?)
+                    ORDER BY e.id DESC"""
+    else:
+        sql = """SELECT count(e.id) result
+                    FROM Entries e, Users u
+                    WHERE u.id = e.user_id
+                    AND (e.title LIKE ?
+                    OR e.artist LIKE ?
+                    OR e.comment LIKE ?
+                    OR u.username LIKE ?)
                     ORDER BY e.id ASC"""
-    return db.query(sql, ["%" + str(query) + "%"] * 4)
+    return db.query(sql, ["%" + str(query) + "%"] * 4)[0]["result"]
 
 def count_entries(user_id="%"):
-    sql = """SELECT COUNT(*) entries FROM Entries
+    sql = """SELECT COUNT(id) result FROM Entries
                 WHERE user_id LIKE ?"""
-    return db.query(sql, [user_id])[0]["entries"]
+    return db.query(sql, [user_id])[0]["result"]
 
 def get_entries(page, page_size):
     sql = """SELECT e.id, e.title, e.artist, e.user_id, u.username

@@ -36,13 +36,13 @@
     <form action="/login" method="post">
       <p>
         <label for="username">Username</label>:<br />
-        <input id="username" type="text" name="username" required maxlength="16" />
+        <input id="username" type="text" name="username" required maxlength="16" value="{{ filled.username }}"/>
       </p>
       <p>
         <label for="password">Password</label>:<br />
         <input id="password" type="password" name="password" required />
       </p>
-      <input type="submit" value="Kirjaudu" />
+      <input type="submit" value="Log in" />
     </form>
     {% endif %}
   </div>

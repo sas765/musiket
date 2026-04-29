@@ -51,6 +51,17 @@
       in <a href="/user/{{ entry.user_id }}">{{ entry.username }}</a>'s collection
     </div>
     {% endfor %}
+    <form action="/find_entry" method="get">
+      <input type="hidden" name="query" value="{{ query }}">
+      <input type="hidden" name="order" value="{{ order }}">
+      <p>
+        {% if page != 1 %}
+        <input type="submit" name="page" value="{{ page - 1 }}">
+        {% endif %}
+        {{ page }}/{{ page_count }}
+        <input type="submit" name="page" value="{{ page + 1}}">
+      </p>
+    </form>
   </div>
   {% endif %}
 </body>
