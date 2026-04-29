@@ -298,18 +298,18 @@ def find_entry():
     else:
         page = 1
 
-    if query:
-        results = entries.find_entries(query, order, page, page_size)
-    else:
-        query = ""
-        results = []
-
     entry_count = entries.count_results(query, order)
     page_count = math.ceil(entry_count / page_size)
     page_count = max(page_count, 1)
 
     page = max(page, 1)
     page = min(page, page_count)
+
+    if query:
+        results = entries.find_entries(query, order, page, page_size)
+    else:
+        query = ""
+        results = []
 
     return render_template("find_entry.html", query=query, results=results,
                            order=order, page=page, page_count=page_count, entry_count=entry_count)
