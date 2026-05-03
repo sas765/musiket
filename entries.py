@@ -64,10 +64,9 @@ def count_results(query):
                 OR u.username LIKE ?)"""
     return db.query(sql, ["%" + str(query) + "%"] * 4)[0]["result"]
 
-def count_entries(user_id="%"):
-    sql = """SELECT COUNT(id) result FROM Entries
-                WHERE user_id LIKE ?"""
-    return db.query(sql, [user_id])[0]["result"]
+def count_entries():
+    sql = """SELECT COUNT(id) result FROM Entries"""
+    return db.query(sql)[0]["result"]
 
 def get_entries(page, page_size):
     sql = """SELECT e.id, e.title, e.artist, e.user_id, u.username

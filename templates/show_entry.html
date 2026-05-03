@@ -102,6 +102,10 @@
       <input type="submit" value="Send message" />
     </form>
     <hr />
+    {% else %}
+    <p>
+      <a href="/login">Log in</a> to add to the conversation!
+    </p>
     {% endif %}
     <form action="/entry/{{ entry.id }}" method="get">
       <input type="hidden" name="order" value="{{ order }}">

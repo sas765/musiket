@@ -3,4 +3,3 @@ venv
 database.db
 test*.png
 *database.db
-seed.py
