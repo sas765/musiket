@@ -1,6 +1,6 @@
 # Program performance with large database
 
-Using the file seed.py found in this directory, the program's performance was tested with and without an index in the program's database.
+Using the file seed.py found in this directory, the program's performance was tested with and without an index in the program's database. The database thus contained no images, so performance related to images is not observed in this test.
 
 ## Without index
 
@@ -233,11 +233,31 @@ elapsed time: 2.77 s
 127.0.0.1 - - [03/May/2026 17:53:18] "GET /discussions/220/5 HTTP/1.1" 200 -
 elapsed time: 0.0 s
 127.0.0.1 - - [03/May/2026 17:53:18] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.02 s
+127.0.0.1 - - [03/May/2026 18:08:35] "GET /entry/995509 HTTP/1.1" 200 -
+elapsed time: 0.01 s
+127.0.0.1 - - [03/May/2026 18:08:35] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.0 s
+127.0.0.1 - - [03/May/2026 18:08:38] "GET /entry/995509?order=None&page=2 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [03/May/2026 18:08:38] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [03/May/2026 18:09:05] "GET /entry/276436 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [03/May/2026 18:09:05] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [03/May/2026 18:09:13] "GET /entry/652723 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [03/May/2026 18:09:13] "GET /static/main.css HTTP/1.1" 304 -
+elapsed time: 0.01 s
+127.0.0.1 - - [03/May/2026 18:09:19] "GET /entry/652723?order=0 HTTP/1.1" 200 -
+elapsed time: 0.0 s
+127.0.0.1 - - [03/May/2026 18:09:19] "GET /static/main.css HTTP/1.1" 304 -
 ```
 
 The results on user pages are very varied. On this test the first user's pages turned out to be much faster than the average test, where the load times were usually around 1.4-1.5 seconds like on the non-index tests, so I decided to test on another user in the same test. On the first user page, the results are returned many times faster than on the second. I have no idea why and not enough time, patience and/or knowhow how to find out. 
 
-Despite the confusing results on user pages, the site is slightly faster on other pages.
+Despite the confusing results on user pages, the site is slightly faster on other pages. The biggest improvement is found on entry pages.
 
 ## Conclusions
 
