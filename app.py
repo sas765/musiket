@@ -1,5 +1,6 @@
 import math
 from secrets import token_hex
+import sqlite3
 
 from flask import Flask
 from flask import abort, flash, make_response, redirect, render_template, request, session
@@ -409,7 +410,7 @@ def create():
 
     try:
         users.create_user(username, password_hash)
-    except:
+    except sqlite3.IntegrityError:
         flash("ERROR: username already exists")
         return render_template("register.html", filled=filled)
     flash("Account created successfully")
