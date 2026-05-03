@@ -45,7 +45,7 @@
       </p>
       {% endif %}
       {% for image in images %}
-      <img src="/image/{{ image.id }}" alt="Image: {{ image.alt }}" />
+      <img style="max-width: 300px; max-height: 300px;" src="/image/{{ image.id }}" alt="Image: {{ image.alt }}" />
       {% endfor %}
       <div class="comment">
         <p>User comment:</p>
@@ -61,6 +61,18 @@
   </div>
   <div class="discussion">
     <h2>Discussion</h2>
+    <form action="/entry/{{ entry.id }}" method="get">
+      <p>
+        {% if order == "0" %}
+        <input id="order1" type="radio" name="order" value="0" checked><label for="order1">Newest first</label>
+        <input id="order2" type="radio" name="order" value="1"><label for="order2">Oldest first</label>
+        {% else %}
+        <input id="order1" type="radio" name="order" value="0"><label for="order1">Newest first</label>
+        <input id="order2" type="radio" name="order" value="1" checked><label for="order2">Oldest first</label>
+        {% endif %}
+      </p>
+      <input type="submit" value="Sort">
+    </form>
     {% for message in discussion %}
     <div class="message">
       <p>
@@ -91,6 +103,20 @@
     </form>
     <hr />
     {% endif %}
+    <form action="/entry/{{ entry.id }}" method="get">
+      <input type="hidden" name="order" value="{{ order }}">
+      <p>
+        {% if page != 1 %}
+        <input type="submit" name="page" value="{{ page - 1 }}">
+        {% endif %}
+        {{ page }}/{{ page_count }}
+        {% if page_count != 1 %}
+        {% if page != page_count %}
+        <input type="submit" name="page" value="{{ page + 1}}">
+        {% endif %}
+        {% endif %}
+      </p>
+    </form>
   </div>
 </body>
 

@@ -54,25 +54,14 @@ def find_entries(query, order, page, page_size):
     offset = page_size * (page - 1)
     return db.query(sql, ["%" + str(query) + "%"] * 4 + [limit, offset])
 
-def count_results(query, order):
-    if order == "0":
-        sql = """SELECT IFNULL(COUNT(e.id), 0) result
-                    FROM Entries e, Users u
-                    WHERE u.id = e.user_id
-                    AND (e.title LIKE ?
-                    OR e.artist LIKE ?
-                    OR e.comment LIKE ?
-                    OR u.username LIKE ?)
-                    ORDER BY e.id DESC"""
-    else:
-        sql = """SELECT IFNULL(COUNT(e.id), 0) result
-                    FROM Entries e, Users u
-                    WHERE u.id = e.user_id
-                    AND (e.title LIKE ?
-                    OR e.artist LIKE ?
-                    OR e.comment LIKE ?
-                    OR u.username LIKE ?)
-                    ORDER BY e.id ASC"""
+def count_results(query):
+    sql = """SELECT IFNULL(COUNT(e.id), 0) result
+                FROM Entries e, Users u
+                WHERE u.id = e.user_id
+                AND (e.title LIKE ?
+                OR e.artist LIKE ?
+                OR e.comment LIKE ?
+                OR u.username LIKE ?)"""
     return db.query(sql, ["%" + str(query) + "%"] * 4)[0]["result"]
 
 def count_entries(user_id="%"):
@@ -123,13 +112,31 @@ def remove_entry(entry_id):
     sql = "DELETE FROM Entries WHERE id = ?"
     db.execute(sql, [entry_id])
 
-def get_discussion(entry_id):
-    sql = """SELECT m.id, m.content, m.sent_at, m.user_id, u.username
+def get_discussion(entry_id, page_size, page, order):
+    if order == "0":
+        sql = """SELECT m.id, m.content, m.sent_at, m.user_id, u.username
+                    FROM Messages m, Users u
+                    WHERE m.entry_id = ?
+                    AND m.user_id = u.id
+                    ORDER BY m.id DESC
+                    LIMIT ? OFFSET ?"""
+    else:
+        sql = """SELECT m.id, m.content, m.sent_at, m.user_id, u.username
+                    FROM Messages m, Users u
+                    WHERE m.entry_id = ?
+                    AND m.user_id = u.id
+                    ORDER BY m.id ASC
+                    LIMIT ? OFFSET ?"""
+    limit = page_size
+    offset = page_size * (page - 1)
+    return db.query(sql, [entry_id, limit, offset])
+
+def count_discussion(entry_id):
+    sql = """SELECT IFNULL(COUNT(m.id), 0) messages
                 FROM Messages m, Users u
                 WHERE m.entry_id = ?
-                AND m.user_id = u.id
-                ORDER BY m.id"""
-    return db.query(sql, [entry_id])
+                AND m.user_id = u.id"""
+    return db.query(sql, [entry_id])[0]["messages"]
 
 def get_message(message_id):
     sql = """SELECT m.id, m.content, m.sent_at, m.user_id, m.entry_id, u.username

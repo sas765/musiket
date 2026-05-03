@@ -43,8 +43,10 @@
     <p>This entry has {{ images | count }} images</p>
     <form action="/remove_images" method="post">
       {% for image in images %}
-      <input type="checkbox" name="image_id" value="{{ image.id }}">
-      <img src="/image/{{ image.id }}" alt="Image: {{ image.alt }}" />
+      <input type="checkbox" id="{{ image.id }}" name="image_id" value="{{ image.id }}">
+      <label for="{{ image.id }}">
+        <img style="max-width: 300px; max-height: 300px;" src="/image/{{ image.id }}" alt="Image: {{ image.alt }}" />
+      </label>
       {% endfor %}
       <input type="hidden" name="entry_id" value="{{ entry.id }}">
       <input type="hidden" name="csrf_token" value="{{ session.csrf_token }}">

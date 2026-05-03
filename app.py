@@ -112,14 +112,31 @@ def show_discussions(user_id, page=1):
 
 @app.route("/entry/<int:entry_id>")
 def show_entry(entry_id):
+    page_size = 10
     entry = entries.get_entry(entry_id)
     if not entry:
         abort(404)
+    if "page" in request.args:
+        page = int(request.args.get("page"))
+    else:
+        page = 1
+
+    order = request.args.get("order")
+    print(order)
+    message_count = entries.count_discussion(entry_id)
+    page_count = math.ceil(message_count / page_size)
+    page_count = max(page_count, 1)
+
+    page = max(page, 1)
+    page = min(page, page_count)
+
     classes = entries.get_classes(entry_id)
-    discussion = entries.get_discussion(entry_id)
+    discussion = entries.get_discussion(entry_id, page_size, page, order)
     images = entries.get_images(entry_id)
     return render_template("show_entry.html", entry=entry, classes=classes,
-                           discussion=discussion, images=images, session=session)
+                           discussion=discussion, images=images, session=session,
+                           page_count=page_count, page=page, message_count=message_count,
+                           order=order)
 
 @app.route("/new_entry")
 def new_entry():
@@ -298,7 +315,7 @@ def find_entry():
     else:
         page = 1
 
-    entry_count = entries.count_results(query, order)
+    entry_count = entries.count_results(query)
     page_count = math.ceil(entry_count / page_size)
     page_count = max(page_count, 1)
 

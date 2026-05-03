@@ -60,7 +60,9 @@
         {% endif %}
         {{ page }}/{{ page_count }}
         {% if page_count != 1 %}
+        {% if page != page_count %}
         <input type="submit" name="page" value="{{ page + 1}}">
+        {% endif %}
         {% endif %}
       </p>
     </form>
